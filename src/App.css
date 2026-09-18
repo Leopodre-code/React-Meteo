@@ -1,0 +1,66 @@
+.counter {
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+  margin-bottom: 24px;
+
+  &:hover {
+    border-color: var(--accent-border);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+.day-cards-container {
+  display: flex;
+  overflow-y: hidden;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  height: 14rem;
+  background-color: var(--accent-bg);
+}
+.day-cards-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+.scroll-button-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 25%;
+  width: 1.5rem;
+  position: sticky;
+  left: 96%;
+  background-color: var(--accent-bg);
+  border: solid 2px rgba(0, 0, 0, 0.292);
+  border-radius: 0.7rem;
+  z-index: 9;
+}
+.scroll-button-left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 25%;
+  width: 1.5rem;
+  position: sticky;
+  left: 0;
+  background-color: var(--accent-bg);
+  border: solid 2px rgba(0, 0, 0, 0.292);
+  border-radius: 0.7rem;
+  z-index: 10;
+}
+.button-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  fill: var(--social-bg);
+}

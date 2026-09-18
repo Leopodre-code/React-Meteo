@@ -1,0 +1,41 @@
+header {
+  width: 100%;
+  display: flex;
+  gap: 5px;
+  max-height: 5rem;
+  align-items: center;
+  padding: 0 0 0.5rem 0;
+}
+
+header div {
+  height: 1.8rem;
+  text-align: center;
+}
+
+.location-card {
+  background-color: var(--accent-bg);
+  padding: 5px;
+  border-radius: 5px;
+  color: var(--accent);
+  max-height: 4rem;
+  display: block;
+  text-align: center;
+}
+.location-card:first-child {
+  border: 5px solid var(--accent-border);
+}
+.input-add-card {
+  width: 8rem;
+  margin: 2px;
+  height: 1.5rem;
+}
+.button-add-Card {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 5px;
+  margin: 2px;
+}
+.add-card {
+  background-color: var(--accent-2);
+  padding: 2px;
+}
