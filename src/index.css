@@ -18,6 +18,33 @@
   --rain-moderate: #3f9fb0;
   --rain-heavy: #0f3f52;
 
+  /* -10° à 0° — très froid */
+  --temp-cold-a: #2a4d9c; /* bleu */
+  --temp-cold-b: #7a2fc4;
+
+  /* 0° à 10° — frais */
+  --temp-cool-a: var(--accent); /* #0e7c86 — teal */
+  --temp-cool-b: #0e5e86;
+
+  /* 10° à 20° — doux */
+  --temp-mild-a: var(--accent-2); /* #2fa87a — vert */
+  --temp-mild-b: #61a72f;
+
+  /* 20° à 30° — chaud */
+  --temp-hot-a: var(--accent-3); /* #f2b21c — or */
+  --temp-hot-b: #f2751c;
+
+  /* > 30° — très chaud */
+  --temp-extreme-a: #d9481f; /* rouge-orangé */
+  --temp-extreme-b: #e01f8c;
+
+  /* NUIT */
+  --night-very-cold: #95a1c6; /* -20° à -10° */
+  --night-cold: #6994bf; /* -10° à 0° */
+  --night-cool: #70adc2; /* 0° à 10° */
+  --night-mild: #ac9c67; /* 10° à 20° */
+  --night-warm: #d49b9f; /* 20° à 30° */
+
   --sans: system-ui, "Segoe UI", Roboto, sans-serif;
   --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;

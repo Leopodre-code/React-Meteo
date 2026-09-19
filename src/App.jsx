@@ -71,10 +71,10 @@ function App() {
             dayName={dayName}
             dayNumber={dayNumber}
             maxTemp={maxTemp}
+            minTemp={minTemp}
             tempMode={tempMode}
             info={info}
             icon={icon}
-            minTemp={minTemp}
             bar={bar}
           ></DayCard>,
         );

@@ -3,7 +3,6 @@
   width: 8rem;
   height: 12rem;
   border-radius: 10px;
-  border: solid 2px var(--accent-border);
   display: grid;
   grid-template: 2fr 3fr 2fr / 1fr 3fr 1fr 1fr;
   flex: 0 0 auto;
@@ -18,12 +17,6 @@
     height: 100%;
     box-sizing: border-box;
   }
-  background: conic-gradient(
-    var(--accent),
-    var(--accent-2),
-    var(--accent-3),
-    var(--accent)
-  );
   transition: transform 500ms ease-out;
   /* mettre un gradient dans le background */
   &:hover {
