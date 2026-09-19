@@ -87,7 +87,7 @@ function App() {
     dayCardsSliderRef.current.scrollBy({ left: distance, behavior: "smooth" });
     setScrollDist((prev) => prev + Number(distance));
   }
-  // FAIRE EN SORTE QUE SOIT LE BOUTON GAUCHE OPU DROIT S'AFFICHE
+  // TROUVER UN MOYEN QUE DAYWEATHER SACHE QUEL JOUR EST SELECTIONNER ET UE DAYCARD OU UN TEBLEAU DANS APP.JSX LUI ENVOIE LES TEMPS HOURLY
   return (
     <>
       <Header

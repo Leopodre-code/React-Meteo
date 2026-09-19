@@ -27,8 +27,8 @@ function DayCard(props) {
       "--night-mild",
       "--night-warm",
     ];
-    let MTemp1 = Math.round(props.maxTemp / 10);
-    let MTemp2 = Math.floor((props.maxTemp + 10) / 10);
+    let MTemp1 = Math.floor((props.maxTemp + 10) / 10);
+    let MTemp2 = Math.round(props.maxTemp / 10);
     let mTemp = Math.floor((props.minTemp + 20) / 10);
     let C1 = dayColorA[MTemp1];
     let C2 = dayColorB[MTemp2];
