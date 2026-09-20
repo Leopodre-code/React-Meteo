@@ -10,6 +10,11 @@ import {
 
 function DayWeather(props) {
   let tempHourly = props.tempHourly;
+  let data = [
+    { dayName: "Sam", maxTemp: 24, minTemp: 14 },
+    { dayName: "Dim", maxTemp: 21, minTemp: 12 },
+    { dayName: "Lun", maxTemp: 24, minTemp: 15 },
+  ];
   return (
     <div className="main">
       <LineChart width={500} height={300} data={data}>

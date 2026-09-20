@@ -36,10 +36,14 @@ function DayCard(props) {
 
     cardRef.current.style.background = `conic-gradient(var(${C2}),var(${C3}),var(${C1}),var(${C2}) )`;
     cardRef.current.style.border = `solid 2px var(${C3})`;
-  }, []);
-  // FAIRE EN SORTE QUE LES CARTES ONT DES COULEUR DES BACKGROUND SUIVANT LA TEMP2RATURE ET LE TEMPS ET UN PEU D4ALEATOIRE
+  }, [props.maxTemp, props.minTemp]);
+
   return (
-    <div className="day-card" ref={cardRef}>
+    <div
+      className="day-card"
+      ref={cardRef}
+      onClick={() => props.setDaySelected(props.day)}
+    >
       <h5 className="dayName">{props.dayName}</h5>
       <h5 className="dayNumber">{props.dayNumber}</h5>
       <img src={props.icon} className="icon" />

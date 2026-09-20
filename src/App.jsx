@@ -20,6 +20,8 @@ function App() {
   ]);
   const [mode, setMode] = useState("°C");
   const [scrollDist, setScrollDist] = useState(0);
+  const [data, setData] = useState();
+  const [daySelected, setDaySelected] = useState("");
   let latitude = locationsList[0].latitude;
   let longitude = locationsList[0].longitude;
   async function getJSON() {
@@ -38,10 +40,11 @@ function App() {
     getJSON().then((data) => {
       console.log(data);
       // tout le code pour crée une dayCard :
-
+      setData(data);
       let days = data.daily.time;
       let dayCardsLoop = [];
-      console.log(days);
+      setDaySelected(days[0]);
+
       for (let i = 0; i < days.length; i++) {
         let date = new Date(days[i]);
         const jours = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
@@ -76,18 +79,26 @@ function App() {
             info={info}
             icon={icon}
             bar={bar}
+            day={date}
+            setDaySelected={setDaySelected}
           ></DayCard>,
         );
       }
       setDayCard(dayCardsLoop);
     });
   }, [locationsList]);
+  // card slider
   const dayCardsSliderRef = useRef(null);
   function scroll(distance) {
     dayCardsSliderRef.current.scrollBy({ left: distance, behavior: "smooth" });
     setScrollDist((prev) => prev + Number(distance));
   }
-  // TROUVER UN MOYEN QUE DAYWEATHER SACHE QUEL JOUR EST SELECTIONNER ET UE DAYCARD OU UN TEBLEAU DANS APP.JSX LUI ENVOIE LES TEMPS HOURLY
+  useEffect(() => {
+    console.log(daySelected);
+    // CREE LE TABLEAU EN FONCTION DU DAY SELECTIONNE
+  }, [daySelected]);
+  let dayWeatherData = data;
+  console.log(data);
   return (
     <>
       <Header
@@ -124,7 +135,7 @@ function App() {
         )}
         {dayCards}
       </div>
-      <DayWeather></DayWeather>
+      <DayWeather data={dayWeatherData}></DayWeather>
     </>
   );
 }
