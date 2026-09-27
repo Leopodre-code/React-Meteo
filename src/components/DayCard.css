@@ -77,4 +77,13 @@
   .info {
     grid-area: info;
   }
+  .selected {
+    outline: 3px solid var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+}
+.selected {
+  outline: 3px solid var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+  transform: scale(1.05);
 }

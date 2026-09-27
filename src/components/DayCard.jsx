@@ -37,12 +37,21 @@ function DayCard(props) {
     cardRef.current.style.background = `conic-gradient(var(${C2}),var(${C3}),var(${C1}),var(${C2}) )`;
     cardRef.current.style.border = `solid 2px var(${C3})`;
   }, [props.maxTemp, props.minTemp]);
+  function SelectDay() {
+    document.querySelectorAll(".day-card.selected").forEach((card) => {
+      card.classList.remove("selected");
+    });
+  }
 
   return (
     <div
       className="day-card"
       ref={cardRef}
-      onClick={() => props.setDaySelected(props.day)}
+      onClick={() => {
+        props.setDaySelected(props.dateHourly);
+        SelectDay(props.dateHourly);
+        cardRef.current.classList.add("selected");
+      }}
     >
       <h5 className="dayName">{props.dayName}</h5>
       <h5 className="dayNumber">{props.dayNumber}</h5>

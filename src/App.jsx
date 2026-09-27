@@ -7,9 +7,9 @@ import "./App.css";
 import cloudy from "./assets/icons/cloud.png";
 // import moon from "./assets/icons/moon.png";
 import rainy from "./assets/icons/rain.png";
-import snowy from "./assets/icons/snow.png";
-import stormy from "./assets/icons/storm.png";
-import sunCloud from "./assets/icons/sun-cloud.png";
+//import snowy from "./assets/icons/snow.png";
+//import stormy from "./assets/icons/storm.png";
+//import sunCloud from "./assets/icons/sun-cloud.png";
 import sunny from "./assets/icons/sun.png";
 
 function App() {
@@ -43,13 +43,14 @@ function App() {
       setData(data);
       let days = data.daily.time;
       let dayCardsLoop = [];
-      setDaySelected(days[0]);
+      setDaySelected(`${days[0]}T00:00`);
 
       for (let i = 0; i < days.length; i++) {
-        let date = new Date(days[i]);
+        let dateTool = new Date(days[i]);
+        let dateHourly = `${days[i]}T00:00`;
         const jours = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
-        let dayName = jours[date.getDay()];
-        let dayNumber = date.getDate();
+        let dayName = jours[dateTool.getDay()];
+        let dayNumber = dateTool.getDate();
 
         let maxTemp = Math.round(data.daily.temperature_2m_max[i]);
         let minTemp = Math.round(data.daily.temperature_2m_min[i]);
@@ -79,8 +80,9 @@ function App() {
             info={info}
             icon={icon}
             bar={bar}
-            day={date}
+            dateHourly={dateHourly}
             setDaySelected={setDaySelected}
+            daySelected={daySelected}
           ></DayCard>,
         );
       }
@@ -93,12 +95,28 @@ function App() {
     dayCardsSliderRef.current.scrollBy({ left: distance, behavior: "smooth" });
     setScrollDist((prev) => prev + Number(distance));
   }
-  useEffect(() => {
-    console.log(daySelected);
-    // CREE LE TABLEAU EN FONCTION DU DAY SELECTIONNE
-  }, [daySelected]);
-  let dayWeatherData = data;
-  console.log(data);
+
+  /* Partie graphique */
+
+  // CREE LE TABLEAU DES DONNEE (HEURE) AVEC DAY SELECTED
+  let dayWeatherStartIndex;
+  let dayWeather = {
+    temperature_2m: "",
+    wind_speed_10m: "",
+    rain: "",
+    snowfall: "",
+    time: "",
+  };
+  if (data) {
+    dayWeatherStartIndex = data.hourly.time.indexOf(daySelected);
+    Object.keys(dayWeather).forEach((e) => {
+      dayWeather[e] = data.hourly[e].slice(
+        dayWeatherStartIndex,
+        dayWeatherStartIndex + 24,
+      );
+    });
+  }
+
   return (
     <>
       <Header
@@ -135,7 +153,7 @@ function App() {
         )}
         {dayCards}
       </div>
-      <DayWeather data={dayWeatherData}></DayWeather>
+      <DayWeather dayWeather={dayWeather}></DayWeather>
     </>
   );
 }

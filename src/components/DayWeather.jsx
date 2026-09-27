@@ -9,19 +9,19 @@ import {
 } from "recharts";
 
 function DayWeather(props) {
-  let tempHourly = props.tempHourly;
-  let data = [
-    { dayName: "Sam", maxTemp: 24, minTemp: 14 },
-    { dayName: "Dim", maxTemp: 21, minTemp: 12 },
-    { dayName: "Lun", maxTemp: 24, minTemp: 15 },
-  ];
+  console.log(props.dayWeather);
+  let data = dayWeather.time.map((heure, i) => ({
+    hour: heure,
+    temp: dayWeather.temperature_2m[i],
+  })); // FAIRE UN TABLEAU POUR CHAQUE HEURE
   return (
     <div className="main">
       <LineChart width={500} height={300} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="dayName" />
+        <XAxis dataKey="hour" />
         <YAxis />
         <Tooltip />
+        <Line dataKey="maxTemp" stroke="var(--accent)" />
         <Line dataKey="maxTemp" stroke="var(--accent)" />
       </LineChart>
     </div>
