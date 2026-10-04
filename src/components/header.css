@@ -18,6 +18,7 @@ header div {
   border-radius: 5px;
   color: var(--accent);
   max-height: 4rem;
+  width: fit-content;
   display: block;
   text-align: center;
 }
@@ -38,4 +39,11 @@ header div {
 .add-card {
   background-color: var(--accent-2);
   padding: 2px;
+}
+#liste-villes {
+  position: absolute;
+  z-index: 1000;
+  top: 30px;
+  background-color: aliceblue;
+  width: 8rem;
 }

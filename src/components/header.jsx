@@ -1,5 +1,5 @@
 import "./header.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Header(props) {
   // fonction pour mettre les carte en premier
@@ -15,8 +15,11 @@ function Header(props) {
   }
 
   // acquérir l'input
-  const [text, setText] = useState("");
-
+  const [text, setText] = useState("Paris");
+  const [suggestions, setSuggestions] = useState([
+    { name: "Schoenau", id: 2975434 },
+    { name: "Selestat", id: 2975233 },
+  ]);
   // affichage des cartes
   let locationsCards = props.locationsList.map((element) => {
     if (!element || !element.location) return;
@@ -30,6 +33,35 @@ function Header(props) {
       </div>
     );
   });
+  // suggérer des lieux
+  async function getJSON() {
+    let list;
+    try {
+      const response = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/search?name=${text}&count=5&language=fr`,
+      );
+      list = await response.json();
+    } catch (error) {
+      console.log("une erreur s'est produite avec le JSON : " + error);
+    }
+    return list;
+  }
+  useEffect(() => {
+    if (text.slice().length < 3) return;
+    getJSON().then((response) => {
+      console.log(suggestions);
+      if (!response || !response.results) return;
+      console.log(response.results);
+      setSuggestions([]);
+      setSuggestions(
+        response.results.map((e) => ({
+          location: e.name,
+          id: e.id,
+        })),
+      );
+    });
+  }, [text]);
+
   // ajouter un lieu
   function addLocation(location) {
     if (!location) return;
@@ -67,6 +99,19 @@ function Header(props) {
           placeholder="Paris"
           className="input-add-Card"
         ></input>
+        {suggestions.length > 0 && (
+          <ul id="liste-villes">
+            {suggestions.map((ville) => (
+              <li
+                key={ville.id}
+                value={ville.location}
+                onClick={() => setText(ville.location)}
+              >
+                {ville.location}
+              </li>
+            ))}
+          </ul>
+        )}
         <button className="button-add-Card" onClick={() => addLocation(text)}>
           +
         </button>

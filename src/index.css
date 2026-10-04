@@ -20,7 +20,7 @@
 
   /* -10° à 0° — très froid */
   --temp-cold-a: #2a4d9c; /* bleu */
-  --temp-cold-b: #7a2fc4;
+  --temp-cold-b: #542fc4;
 
   /* 0° à 10° — frais */
   --temp-cool-a: var(--accent); /* #0e7c86 — teal */

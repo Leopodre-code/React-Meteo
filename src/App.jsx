@@ -101,11 +101,11 @@ function App() {
   // CREE LE TABLEAU DES DONNEE (HEURE) AVEC DAY SELECTED
   let dayWeatherStartIndex;
   let dayWeather = {
-    temperature_2m: "",
-    wind_speed_10m: "",
-    rain: "",
-    snowfall: "",
-    time: "",
+    temperature_2m: [],
+    wind_speed_10m: [],
+    rain: [],
+    snowfall: [],
+    time: [],
   };
   if (data) {
     dayWeatherStartIndex = data.hourly.time.indexOf(daySelected);
@@ -116,7 +116,6 @@ function App() {
       );
     });
   }
-
   return (
     <>
       <Header
