@@ -12,6 +12,9 @@ import rainy from "./assets/icons/rain.png";
 //import sunCloud from "./assets/icons/sun-cloud.png";
 import sunny from "./assets/icons/sun.png";
 
+
+
+
 function App() {
   const [dayCards, setDayCard] = useState([]);
   const [locationsList, setLocationsList] = useState([
@@ -26,6 +29,7 @@ function App() {
   let longitude = locationsList[0].longitude;
   async function getJSON() {
     let list;
+
     try {
       const response = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,uv_index_max,wind_speed_10m_max,wind_direction_10m_dominant,precipitation_sum&hourly=temperature_2m,snowfall,rain,wind_speed_10m,precipitation&models=best_match&current=temperature_2m,rain,precipitation&timezone=Europe%2FBerlin&forecast_days=7&past_hours=24`,
@@ -115,6 +119,7 @@ function App() {
         dayWeatherStartIndex + 24,
       );
     });
+    dayWeather.sunrise: data.daily.sunrise; 
   }
   return (
     <>
@@ -152,7 +157,10 @@ function App() {
         )}
         {dayCards}
       </div>
-      <DayWeather dayWeather={dayWeather}></DayWeather>
+      <DayWeather
+        daySelected={daySelected}
+        dayWeather={dayWeather}
+      ></DayWeather>
     </>
   );
 }

@@ -26,9 +26,11 @@ header div {
   border: 5px solid var(--accent-border);
 }
 .input-add-card {
-  width: 8rem;
+  max-width: 8rem;
+  width: 4rem;
   margin: 2px;
   height: 1.5rem;
+  flex: 1 1 auto;
 }
 .button-add-Card {
   width: 1.6rem;
@@ -38,7 +40,10 @@ header div {
 }
 .add-card {
   background-color: var(--accent-2);
-  padding: 2px;
+  padding: 5px;
+  border-radius: 5px;
+  display: flex;
+  flex-shrink: 1;
 }
 #liste-villes {
   position: absolute;

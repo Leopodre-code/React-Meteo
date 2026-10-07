@@ -15,7 +15,7 @@ function Header(props) {
   }
 
   // acquérir l'input
-  const [text, setText] = useState("Paris");
+  const [text, setText] = useState("");
   const [suggestions, setSuggestions] = useState([
     { name: "Schoenau", id: 2975434 },
     { name: "Selestat", id: 2975233 },
@@ -38,7 +38,7 @@ function Header(props) {
     let list;
     try {
       const response = await fetch(
-        `https://geocoding-api.open-meteo.com/v1/search?name=${text}&count=5&language=fr`,
+        `https://geocoding-api.open-meteo.com/v1/search?name=${text}&count=3&language=fr`,
       );
       list = await response.json();
     } catch (error) {
@@ -71,6 +71,7 @@ function Header(props) {
       {
         headers: { "User-Agent": "MonAppli/1.0" },
       },
+      setText(""),
     )
       .then((reponse) => reponse.json())
       .then((data) => {
@@ -99,7 +100,7 @@ function Header(props) {
           placeholder="Paris"
           className="input-add-Card"
         ></input>
-        {suggestions.length > 0 && (
+        {text.slice().length > 2 && suggestions.length > 0 && (
           <ul id="liste-villes">
             {suggestions.map((ville) => (
               <li

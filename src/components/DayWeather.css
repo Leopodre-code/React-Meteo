@@ -1,3 +1,45 @@
 .main {
   background-color: aqua;
+  display: flex;
+}
+ComposedChart {
+  height: 100%;
+  width: 60%;
+}
+.info-container {
+  width: 40%;
+  padding: 5px;
+  display: grid;
+  grid-template: repeat(4, 3rem) / 8rem 5rem;
+  grid-template:
+    "date credit" minmax(3rem, auto)
+    "sun info" 3rem
+    "sun-hour info" 3rem
+    "settings info" 3rem
+    / 8rem 5rem;
+  * {
+    border: solid 2px rgba(255, 0, 0, 0.447);
+  }
+  .date {
+    grid-area: date;
+    font-size: 0.8rem;
+    height: 100%;
+  }
+  .credit {
+    grid-area: credit;
+  }
+  .sun {
+    grid-area: sun;
+    height: 100%;
+    width: 100%;
+  }
+  .sun-hour {
+    grid-area: sun-hour;
+  }
+  .settings {
+    grid-area: settings;
+  }
+  .info {
+    grid-area: info;
+  }
 }

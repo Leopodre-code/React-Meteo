@@ -8,6 +8,8 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
+import SoleilLevant from "/src/assets/icons/svg/SoleilLevant";
+import SoleilCouchant from "/src/assets/icons/svg/SoleilLevant";
 
 function DayWeather(props) {
   let data = props.dayWeather.time.map((heure, i) => ({
@@ -43,10 +45,17 @@ function DayWeather(props) {
     if (num > 4) num = 4;
     return TEMPCOLORS[num];
   }
-
+  //  TROUVER LES INFOS POUR LA GRID INFO
+  let date = new Date(props.daySelected.slice(0, 10));
+  let jour = date.toLocaleDateString("fr-FR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
   return (
     <div className="main">
-      <ComposedChart width={500} height={300} data={data}>
+      <ComposedChart width={"60%"} height={300} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="hour" />
         <YAxis />
@@ -55,7 +64,7 @@ function DayWeather(props) {
           type="monotone"
           dataKey="temp"
           stroke={`var(--${setTempColor()})`}
-          fill="var(--accent-3)" // FAIRE  UN DEGARDE SUIVANT LA TEMPERATURE
+          fill="var(--accent-3)"
           fillOpacity={0.3}
         />
         <Line
@@ -77,6 +86,19 @@ function DayWeather(props) {
           />
         )}
       </ComposedChart>
+      <div className="info-container">
+        <p className="date">{jour} Après J-C</p>
+        <em className="credit">@Leopodre-2026</em>
+        <div className="sun">
+          <SoleilLevant size={48} />
+          Sunrise : {}
+          <SoleilCouchant size={48} />
+        </div>
+        <div className="settings">
+          <input type="radio"></input>
+        </div>
+        <div className="info"></div>
+      </div>
     </div>
   );
 }
