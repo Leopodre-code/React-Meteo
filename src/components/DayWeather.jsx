@@ -33,11 +33,11 @@ function DayWeather(props) {
   }
   function setTempColor() {
     const TEMPCOLORS = [
-      "temp-cold-a",
-      "temp-cool-a",
-      "temp-mild-a",
-      "temp-hot-a",
-      "temp-extreme-a",
+      "temp-cold-",
+      "temp-cool-",
+      "temp-mild-",
+      "temp-hot-",
+      "temp-extreme-",
     ];
     let num = Math.round(
       props.dayWeather.temperature_2m.reduce((acc, e) => acc + e, 20) / 240,
@@ -68,8 +68,8 @@ function DayWeather(props) {
         <Area
           type="monotone"
           dataKey="temp"
-          stroke={`var(--${setTempColor()})`}
-          fill="var(--accent-3)"
+          stroke={`var(--${setTempColor()}b)`}
+          fill={`var(--${setTempColor()}a)`}
           fillOpacity={0.3}
         />
         {graphic.wind && (

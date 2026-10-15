@@ -66,9 +66,11 @@ function DayCard(props) {
       <span className="bar-container">
         <span className="bar-background">
           <span className="bar-rain" style={{ height: `${rain}px` }}></span>
-          <span className="bar-snow" style={{ height: `${snow}px` }}>
-            <SnowIcon></SnowIcon>
-          </span>
+          {snow > 14 && (
+            <span className="bar-snow" style={{ height: `${snow}px` }}>
+              <SnowIcon></SnowIcon>
+            </span>
+          )}
         </span>
       </span>
       <h6 className="info">{props.info}</h6>

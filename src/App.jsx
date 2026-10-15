@@ -59,7 +59,8 @@ function App() {
 
         let UV = data.daily.uv_index_max[i];
         let rain = data.daily.precipitation_sum[i];
-        let snowfall = data.hourly.snowfall.reduce((acc, e) => acc + e, 0);
+        let snowFall = data.hourly.snowfall.reduce((acc, e) => acc + e, 0);
+        console.log(snowFall);
         let info = "";
 
         let icon = cloudy;
@@ -70,14 +71,14 @@ function App() {
           icon = sunny;
           if (UV >= 6) info += `hight UV index (${UV})`;
         }
-        if (snowfall > 1) {
+        if (snowFall > 1) {
           info += `snowy day`;
           icon = snowy;
         }
-        snowfall = 10;
         let rainBar = Math.max(14, Math.min(140, Math.round(rain * 4)));
-        let snowBar = Math.max(14, Math.min(140, Math.round(snowfall * 10)));
-        if (rain < 1.5 || snowBar > 1) rainBar = 0;
+        let snowBar = Math.max(14, Math.min(140, Math.round(snowFall * 10)));
+        if (rain < 1.5) rainBar = 0;
+        if (snowBar > 1) snowBar = 0;
         dayCardsLoop.push(
           <DayCard
             key={dayNumber}
