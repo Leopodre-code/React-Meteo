@@ -60,10 +60,11 @@
     height: 100%;
     width: 100%;
     display: flex;
-    align-items: end;
+    flex-direction: column;
+    justify-content: end;
     border-radius: 15px;
   }
-  .bar {
+  .bar-rain {
     background-image: linear-gradient(
       to top,
       var(--rain-light) 20px,
@@ -73,6 +74,14 @@
     max-height: 100%;
     width: 100%;
     border-radius: 15px;
+  }
+  .bar-snow {
+    background-image: linear-gradient(
+      to top,
+      var(--snow-light) 10px,
+      var(--snow-moderate) 60px,
+      var(--snow-heavy) 100%
+    );
   }
   .info {
     grid-area: info;

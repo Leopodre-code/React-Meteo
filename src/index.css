@@ -18,6 +18,10 @@
   --rain-moderate: #3f9fb0;
   --rain-heavy: #0f3f52;
 
+  --snow-light: #f4f9ff; /* petite neige : blanc à peine bleuté */
+  --snow-moderate: #a9cdeb; /* neige moyenne : bleu glacier clair */
+  --snow-heavy: #4a6fa5; /* grosse neige : bleu froid profond */
+
   /* -10° à 0° — très froid */
   --temp-cold-a: #2a4d9c; /* bleu */
   --temp-cold-b: #542fc4;

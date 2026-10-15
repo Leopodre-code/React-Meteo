@@ -8,8 +8,9 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
+import { useState } from "react";
 import SoleilLevant from "/src/assets/icons/svg/SoleilLevant";
-import SoleilCouchant from "/src/assets/icons/svg/SoleilLevant";
+import SoleilCouchant from "/src/assets/icons/svg/SoleilCouchant";
 
 function DayWeather(props) {
   let data = props.dayWeather.time.map((heure, i) => ({
@@ -45,6 +46,10 @@ function DayWeather(props) {
     if (num > 4) num = 4;
     return TEMPCOLORS[num];
   }
+  const [graphic, setGraphic] = useState({
+    wind: false,
+    rain: false,
+  });
   //  TROUVER LES INFOS POUR LA GRID INFO
   let date = new Date(props.daySelected.slice(0, 10));
   let jour = date.toLocaleDateString("fr-FR", {
@@ -67,12 +72,14 @@ function DayWeather(props) {
           fill="var(--accent-3)"
           fillOpacity={0.3}
         />
-        <Line
-          dataKey="wind"
-          stroke="var(--accent)"
-          strokeOpacity={0.3}
-          dot={false}
-        />
+        {graphic.wind && (
+          <Line
+            dataKey="wind"
+            stroke="var(--wind)"
+            strokeOpacity={0.5}
+            dot={false}
+          />
+        )}
         {props.dayWeather.snowfall.reduce((acc, e) => acc + e, 0) && (
           <Line dataKey="snow" stroke="var(--accent)" />
         )}
@@ -89,13 +96,33 @@ function DayWeather(props) {
       <div className="info-container">
         <p className="date">{jour} Après J-C</p>
         <em className="credit">@Leopodre-2026</em>
-        <div className="sun">
-          <SoleilLevant size={48} />
-          Sunrise : {}
-          <SoleilCouchant size={48} />
+        <div className="sun-icon">
+          <SoleilLevant />
+          <SoleilCouchant />
+        </div>
+        <div className="sun-hour">
+          {props.dayWeather.sunrise && (
+            <div>{props.dayWeather.sunrise.slice(11, 16)}</div>
+          )}
+          {props.dayWeather.sunset && (
+            <div>{props.dayWeather.sunset.slice(11, 16)}</div>
+          )}
         </div>
         <div className="settings">
-          <input type="radio"></input>
+          <label>
+            Vent
+            <input
+              type="checkbox"
+              checked={graphic.wind}
+              onChange={(e) =>
+                setGraphic((content) => ({
+                  ...content,
+                  wind: e.target.checked,
+                }))
+              }
+            />
+          </label>
+          <label></label>
         </div>
         <div className="info"></div>
       </div>

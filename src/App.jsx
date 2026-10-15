@@ -7,13 +7,10 @@ import "./App.css";
 import cloudy from "./assets/icons/cloud.png";
 // import moon from "./assets/icons/moon.png";
 import rainy from "./assets/icons/rain.png";
-//import snowy from "./assets/icons/snow.png";
+import snowy from "./assets/icons/snow.png";
 //import stormy from "./assets/icons/storm.png";
 //import sunCloud from "./assets/icons/sun-cloud.png";
 import sunny from "./assets/icons/sun.png";
-
-
-
 
 function App() {
   const [dayCards, setDayCard] = useState([]);
@@ -62,7 +59,9 @@ function App() {
 
         let UV = data.daily.uv_index_max[i];
         let rain = data.daily.precipitation_sum[i];
+        let snowfall = data.hourly.snowfall.reduce((acc, e) => acc + e, 0);
         let info = "";
+
         let icon = cloudy;
         if (rain > 15) {
           info += `rainy day`;
@@ -71,8 +70,14 @@ function App() {
           icon = sunny;
           if (UV >= 6) info += `hight UV index (${UV})`;
         }
-        let bar = Math.max(14, Math.min(140, Math.round(rain * 4)));
-        if (rain < 1.5) bar = 0;
+        if (snowfall > 1) {
+          info += `snowy day`;
+          icon = snowy;
+        }
+        snowfall = 10;
+        let rainBar = Math.max(14, Math.min(140, Math.round(rain * 4)));
+        let snowBar = Math.max(14, Math.min(140, Math.round(snowfall * 10)));
+        if (rain < 1.5 || snowBar > 1) rainBar = 0;
         dayCardsLoop.push(
           <DayCard
             key={dayNumber}
@@ -83,7 +88,8 @@ function App() {
             tempMode={tempMode}
             info={info}
             icon={icon}
-            bar={bar}
+            rainBar={rainBar}
+            snowBar={snowBar}
             dateHourly={dateHourly}
             setDaySelected={setDaySelected}
             daySelected={daySelected}
@@ -119,7 +125,12 @@ function App() {
         dayWeatherStartIndex + 24,
       );
     });
-    dayWeather.sunrise: data.daily.sunrise; 
+    dayWeather.sunrise = data.daily.sunrise.find((e) =>
+      e.startsWith(daySelected.slice(0, 10)),
+    );
+    dayWeather.sunset = data.daily.sunset.find((e) =>
+      e.startsWith(daySelected.slice(0, 10)),
+    );
   }
   return (
     <>

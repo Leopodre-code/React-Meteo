@@ -12,9 +12,9 @@ ComposedChart {
   display: grid;
   grid-template: repeat(4, 3rem) / 8rem 5rem;
   grid-template:
-    "date credit" minmax(3rem, auto)
-    "sun info" 3rem
-    "sun-hour info" 3rem
+    "date credit" minmax(3rem, 4rem)
+    "sun-icon info" 2.8rem
+    "sun-hour info" 2rem
     "settings info" 3rem
     / 8rem 5rem;
   * {
@@ -24,17 +24,39 @@ ComposedChart {
     grid-area: date;
     font-size: 0.8rem;
     height: 100%;
+    margin: 0;
   }
   .credit {
     grid-area: credit;
   }
-  .sun {
-    grid-area: sun;
+  .sun-icon {
+    grid-area: sun-icon;
     height: 100%;
-    width: 100%;
+    position: relative;
+    svg {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+    svg:first-child {
+      position: absolute;
+      left: 4px;
+    }
+    svg:last-child {
+      position: absolute;
+      right: 4px;
+    }
   }
   .sun-hour {
     grid-area: sun-hour;
+    position: relative;
+    div:first-child {
+      position: absolute;
+      left: 4px;
+    }
+    div:last-child {
+      position: absolute;
+      right: 4px;
+    }
   }
   .settings {
     grid-area: settings;
@@ -42,4 +64,7 @@ ComposedChart {
   .info {
     grid-area: info;
   }
+}
+* {
+  --wind: #8a9ba8;
 }

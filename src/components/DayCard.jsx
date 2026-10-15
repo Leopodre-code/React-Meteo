@@ -1,8 +1,11 @@
 import "./DayCard.css";
 import { useRef, useEffect } from "react";
+import SnowIcon from "/src/assets/icons/SVG/Flocon.jsx";
 
 function DayCard(props) {
-  let rain = props.bar;
+  let rain = props.rainBar;
+  let snow = props.snowBar;
+  console.log(snow);
   const cardRef = useRef(null);
   useEffect(() => {
     // C1 et C2 , journée , C3, nuit
@@ -62,7 +65,10 @@ function DayCard(props) {
       </h1>
       <span className="bar-container">
         <span className="bar-background">
-          <span className="bar" style={{ height: `${rain}px` }}></span>
+          <span className="bar-rain" style={{ height: `${rain}px` }}></span>
+          <span className="bar-snow" style={{ height: `${snow}px` }}>
+            <SnowIcon></SnowIcon>
+          </span>
         </span>
       </span>
       <h6 className="info">{props.info}</h6>

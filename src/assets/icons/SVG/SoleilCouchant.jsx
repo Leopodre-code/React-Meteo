@@ -13,9 +13,6 @@ export default function SoleilCouchant({ size = 48, ...props }) {
   const carre = `carre-${uid}`;
   const auDessus = `au-dessus-${uid}`;
 
-  // Angles des rayons autour du centre du soleil
-  const angles = [0, -30, 30, -60, 60];
-
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -23,33 +20,34 @@ export default function SoleilCouchant({ size = 48, ...props }) {
       width={size}
       height={size}
       role="img"
-      aria-label="Icône soleil couchant sur fond de ciel"
+      aria-label="Icône coucher de soleil : soleil qui descend dans la mer"
       {...props}
     >
       <defs>
+        {/* Ciel du soir : nuit violette en haut, rouge-orangé à l'horizon */}
         <linearGradient id={ciel} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#2a1f4f" />
-          <stop offset="0.4" stopColor="#8a3f7a" />
-          <stop offset="0.75" stopColor="#ff6a4d" />
-          <stop offset="1" stopColor="#ffb35a" />
+          <stop offset="0" stopColor="#1a1440" />
+          <stop offset="0.45" stopColor="#5b2a6e" />
+          <stop offset="0.8" stopColor="#d9434e" />
+          <stop offset="1" stopColor="#ff8c42" />
         </linearGradient>
         <linearGradient id={mer} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#4a2a5e" />
-          <stop offset="1" stopColor="#150f2a" />
+          <stop offset="0" stopColor="#3a1d4d" />
+          <stop offset="1" stopColor="#0d0a20" />
         </linearGradient>
         <linearGradient id={soleil} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#ffd27a" />
-          <stop offset="1" stopColor="#ff5a3c" />
+          <stop offset="0" stopColor="#ffb347" />
+          <stop offset="1" stopColor="#e8433a" />
         </linearGradient>
         <radialGradient
           id={halo}
           cx="128"
-          cy="168"
+          cy="176"
           r="100"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0" stopColor="#ffb08a" stopOpacity="0.8" />
-          <stop offset="1" stopColor="#ffb08a" stopOpacity="0" />
+          <stop offset="0" stopColor="#ff7a59" stopOpacity="0.8" />
+          <stop offset="1" stopColor="#ff7a59" stopOpacity="0" />
         </radialGradient>
         <clipPath id={carre}>
           <rect width="256" height="256" rx="56" />
@@ -64,36 +62,25 @@ export default function SoleilCouchant({ size = 48, ...props }) {
         <rect width="256" height="160" fill={`url(#${ciel})`} />
         <rect y="160" width="256" height="96" fill={`url(#${mer})`} />
 
-        {/* Quelques étoiles du soir */}
+        {/* Étoiles du soir */}
         <g fill="#fff3e0">
-          <circle cx="60" cy="48" r="2.5" opacity="0.9" />
-          <circle cx="196" cy="36" r="2" opacity="0.8" />
-          <circle cx="168" cy="70" r="1.5" opacity="0.6" />
+          <circle cx="52" cy="44" r="3" opacity="0.9" />
+          <circle cx="200" cy="34" r="2.5" opacity="0.85" />
+          <circle cx="182" cy="78" r="2" opacity="0.7" />
+          <circle cx="78" cy="88" r="1.5" opacity="0.6" />
         </g>
 
-        {/* Halo, rayons, soleil (coupés à l'horizon) */}
+        {/* Halo et soleil à moitié englouti (pas de rayons : il s'éteint) */}
         <g clipPath={`url(#${auDessus})`}>
-          <circle cx="128" cy="168" r="100" fill={`url(#${halo})`} />
-          <g stroke="#ff9a5a" strokeWidth="8" strokeLinecap="round">
-            {angles.map((angle) => (
-              <line
-                key={angle}
-                x1="128"
-                y1="106"
-                x2="128"
-                y2="84"
-                transform={`rotate(${angle} 128 168)`}
-              />
-            ))}
-          </g>
-          <circle cx="128" cy="168" r="48" fill={`url(#${soleil})`} />
+          <circle cx="128" cy="176" r="100" fill={`url(#${halo})`} />
+          <circle cx="128" cy="176" r="52" fill={`url(#${soleil})`} />
         </g>
 
         {/* Reflets sur l'eau */}
-        <g fill="#ff9a5a" opacity="0.6">
-          <rect x="98" y="174" width="60" height="6" rx="3" />
-          <rect x="108" y="192" width="40" height="6" rx="3" />
-          <rect x="116" y="210" width="24" height="5" rx="2.5" />
+        <g fill="#ff8c42" opacity="0.6">
+          <rect x="94" y="172" width="68" height="6" rx="3" />
+          <rect x="106" y="190" width="44" height="6" rx="3" />
+          <rect x="116" y="208" width="24" height="5" rx="2.5" />
         </g>
 
         {/* Ligne d'horizon */}
@@ -102,7 +89,7 @@ export default function SoleilCouchant({ size = 48, ...props }) {
           y1="160"
           x2="256"
           y2="160"
-          stroke="#ffb35a"
+          stroke="#ff8c42"
           strokeWidth="3"
           opacity="0.7"
         />
