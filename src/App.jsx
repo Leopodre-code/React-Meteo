@@ -29,7 +29,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,uv_index_max,wind_speed_10m_max,wind_direction_10m_dominant,precipitation_sum&hourly=temperature_2m,snowfall,rain,wind_speed_10m,precipitation&models=best_match&current=temperature_2m,rain,precipitation&timezone=Europe%2FBerlin&forecast_days=7&past_hours=24`,
+        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,uv_index_max,wind_speed_10m_max,wind_direction_10m_dominant,precipitation_sum,snowfall_sum&hourly=temperature_2m,snowfall,rain,wind_speed_10m,precipitation&models=best_match&current=temperature_2m,rain,precipitation&timezone=Europe%2FBerlin&forecast_days=7&past_hours=24`,
       );
       list = await response.json();
     } catch (error) {
@@ -59,8 +59,7 @@ function App() {
 
         let UV = data.daily.uv_index_max[i];
         let rain = data.daily.precipitation_sum[i];
-        let snowFall = data.hourly.snowfall.reduce((acc, e) => acc + e, 0);
-        console.log(snowFall);
+        let snowFall = data.daily.snowfall_sum[i];
         let info = "";
 
         let icon = cloudy;
@@ -78,7 +77,7 @@ function App() {
         let rainBar = Math.max(14, Math.min(140, Math.round(rain * 4)));
         let snowBar = Math.max(14, Math.min(140, Math.round(snowFall * 10)));
         if (rain < 1.5) rainBar = 0;
-        if (snowBar > 1) snowBar = 0;
+        if (snowBar < 1) snowBar = 0;
         dayCardsLoop.push(
           <DayCard
             key={dayNumber}

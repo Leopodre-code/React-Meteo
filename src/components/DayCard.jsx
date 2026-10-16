@@ -5,7 +5,6 @@ import SnowIcon from "/src/assets/icons/SVG/Flocon.jsx";
 function DayCard(props) {
   let rain = props.rainBar;
   let snow = props.snowBar;
-  console.log(snow);
   const cardRef = useRef(null);
   useEffect(() => {
     // C1 et C2 , journée , C3, nuit
