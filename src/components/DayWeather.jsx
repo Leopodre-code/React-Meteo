@@ -1,4 +1,7 @@
 import "./DayWeather.css";
+
+// FAIRE LA METHODE 2 DEGRADE PUIS FAIRE UNE NOUVELLE BRANCHE GITHUB
+
 import {
   ComposedChart,
   Line,
@@ -13,51 +16,16 @@ import SoleilLevant from "/src/assets/icons/svg/SoleilLevant";
 import SoleilCouchant from "/src/assets/icons/svg/SoleilCouchant";
 
 function DayWeather(props) {
-  let temp1Chunk = Math.floor(
-    Math.min(...props.dayWeather.temperature_2m) / 10,
-  ); // Section de température couleur 1
-  let temp1S = true; // état de mettre (ou pas) temp1
-  let temp2S = false; // état de mettre (ou pas) temp2
-  let NextDesactivate = false;
-
-  let data = props.dayWeather.time.map((heure, i) => {
-    if (NextDesactivate === true) {
-      NextDesactivate = false;
-      temp1S = false;
-    } // fonction pour désactiver en retard le temp1
-
-    if (Math.floor(props.dayWeather.temperature_2m[i] / 10) === temp1Chunk)
-      temp1S = true; // Si c'est dans le chunk 1 alors le mettre dans le tableau
-    else if (temp1S === true) {
-      temp1S = true;
-      temp2S = true;
-      NextDesactivate = true; // Sinon le mettre mais au prochain non
-    } else {
-      temp1S = false;
-      temp2S = true;
-    }
-    console.log(
-      props.dayWeather.temperature_2m[i] +
-        " : " +
-        temp1Chunk +
-        " Est dans le tableau 1 : " +
-        temp1S +
-        " Est dans le tableau 2 : " +
-        temp2S,
-    );
-    return {
-      hour: heure.slice(11, 13),
-      ...(temp1S && { temp1: props.dayWeather.temperature_2m[i] }),
-      ...(temp2S && { temp2: props.dayWeather.temperature_2m[i] }),
-      wind: props.dayWeather.wind_speed_10m[i],
-      snow: props.dayWeather.snowfall[i],
-      rain: props.dayWeather.rain[i],
-    };
-  }); // FAIRE UN TABLEAU POUR CHAQUE HEURE
-
-  console.log(data);
+  let data = props.dayWeather.time.map((heure, i) => ({
+    hour: heure.slice(11, 13),
+    temp: props.dayWeather.temperature_2m[i],
+    wind: props.dayWeather.wind_speed_10m[i],
+    snow: props.dayWeather.snowfall[i],
+    rain: props.dayWeather.rain[i],
+  }));
+  let temp1 = Math.floor(Math.min(...props.dayWeather.temperature_2m) / 10 + 1); // plus petite temp
+  console.log(temp1);
   // DEFINI LES COULEURS
-
   function setRainColor() {
     let dayRain = Math.round(
       props.dayWeather.rain.reduce((acc, e) => acc + e, 0) / 1.5,
@@ -66,7 +34,7 @@ function DayWeather(props) {
     if (dayRain < 16) return "rain-moderate";
     else return "rain-heavy";
   }
-  function setTempColor(temps) {
+  function setTempColor(temps, mode = "temp") {
     const TEMPCOLORS = [
       "temp-cold-",
       "temp-cool-",
@@ -74,18 +42,47 @@ function DayWeather(props) {
       "temp-hot-",
       "temp-extreme-",
     ];
-    let num = Math.floor(
-      (temps.reduce((acc, e) => acc + e, 0) / temps.length + 10) / 10,
-    );
+    let num;
+    if (mode === "temp") {
+      num = Math.floor(
+        (temps.reduce((acc, e) => acc + e, 0) / temps.length + 10) / 10,
+      );
+    } else if (mode === "zone") num = temps;
     if (num < 0) num = 0;
     if (num > 4) num = 4;
     return TEMPCOLORS[num];
   }
+  function setGradientColors() {
+    let actualZone = Math.floor(props.dayWeather.temperature_2m[0] / 10 + 1);
+    let tempsColors = [{ pos: 0, toColor: actualZone }];
+    props.dayWeather.temperature_2m.map((e, i) => {
+      if (Math.floor(e / 10 + 1) !== actualZone) {
+        actualZone = Math.floor(e / 10 + 1);
+        tempsColors.push({ pos: i, toColor: actualZone });
+      }
+    });
+
+    let gradientColors = tempsColors.map((e, i, array) => {
+      if (!array[i + 1])
+        return (
+          <stop
+            offset="1"
+            key={i}
+            stopColor={`var(--${setTempColor([e.toColor], "zone")}a)`}
+          />
+        ); // Si c'est le dernier le mettre a la fin avec la dernière couleur qui change
+      let offset = Math.round(((e.pos + array[i + 1].pos) / 48) * 100) / 100; // offset au centième près
+      let color = setTempColor([e.toColor], "zone");
+      return <stop offset={offset} key={i} stopColor={`var(--${color}a)`} />;
+    });
+    return gradientColors;
+  }
+  let gradientColors = setGradientColors();
+
   const [graphic, setGraphic] = useState({
     wind: false,
     rain: false,
   });
-  //  TROUVER LES INFOS POUR LA GRID INFO
   let date = new Date(props.daySelected.slice(0, 10));
   let jour = date.toLocaleDateString("fr-FR", {
     weekday: "long",
@@ -93,10 +90,14 @@ function DayWeather(props) {
     month: "long",
     year: "numeric",
   });
-  console.log(data);
   return (
     <div className="main">
       <ComposedChart width={"60%"} height={300} data={data}>
+        <defs>
+          <linearGradient id="temp-gradient" x1="0" x2="1" y1="1" y2="1">
+            {[gradientColors]}
+          </linearGradient>
+        </defs>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="hour" />
         <YAxis yAxisId="temp" />
@@ -106,21 +107,13 @@ function DayWeather(props) {
         <Tooltip />
         <Area
           type="monotone"
-          dataKey="temp1"
-          stroke={`var(--${setTempColor([Math.min(...props.dayWeather.temperature_2m)])}b)`}
-          fill={`var(--${setTempColor([Math.min(...props.dayWeather.temperature_2m)])}a)`}
-          fillOpacity={0.3}
+          dataKey="temp"
+          stroke="url(#temp-gradient)"
+          fill="url(#temp-gradient)"
+          fillOpacity={0.6}
           yAxisId="temp"
           strokeWidth={2}
-        />
-        <Area
-          type="monotone"
-          dataKey="temp2"
-          stroke={`var(--${setTempColor([Math.min(...props.dayWeather.temperature_2m) + 10])}b)`}
-          fill={`var(--${setTempColor([Math.min(...props.dayWeather.temperature_2m) + 10])}a)`}
-          fillOpacity={0.3}
-          yAxisId="temp"
-          strokeWidth={2}
+          className="temp-gradient"
         />
         {graphic.wind && (
           <Line
