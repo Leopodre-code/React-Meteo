@@ -14,10 +14,18 @@ import sunny from "./assets/icons/sun.png";
 
 function App() {
   const [dayCards, setDayCard] = useState([]);
-  const [locationsList, setLocationsList] = useState([
-    { location: "Schoenau", latitude: "48.2236", longitude: "7.6467" },
-    { location: "Kerbach", latitude: "49.1672", longitude: "6.9658" },
-  ]);
+  // locationsList
+  console.log(JSON.parse(localStorage.getItem("locationsList")));
+  const [locationsList, setLocationsList] = useState(() => {
+    console.log(JSON.parse(localStorage.getItem("locationsList")));
+    if (!JSON.parse(localStorage.getItem("locationsList")))
+      return [
+        { location: "Schoenau", latitude: "48.2236", longitude: "7.6467" },
+        { location: "Kerbach", latitude: "49.1672", longitude: "6.9658" },
+      ];
+    else return JSON.parse(localStorage.getItem("locationsList"));
+  });
+
   const [mode, setMode] = useState("°C");
   const [scrollDist, setScrollDist] = useState(0);
   const [data, setData] = useState();
@@ -37,6 +45,7 @@ function App() {
     }
     return list;
   }
+
   useEffect(() => {
     getJSON().then((data) => {
       console.log(data);
@@ -99,6 +108,7 @@ function App() {
       setDayCard(dayCardsLoop);
     });
   }, [locationsList]);
+
   // card slider
   const dayCardsSliderRef = useRef(null);
   function scroll(distance) {
@@ -108,7 +118,6 @@ function App() {
 
   /* Partie graphique */
 
-  // CREE LE TABLEAU DES DONNEE (HEURE) AVEC DAY SELECTED
   let dayWeatherStartIndex;
   let dayWeather = {
     temperature_2m: [],

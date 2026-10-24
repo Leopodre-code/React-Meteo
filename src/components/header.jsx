@@ -11,15 +11,11 @@ function Header(props) {
       (element) => element.location === location,
     );
     props.setLocationsList([...element, ...other]);
-    console.log(props.locationsList);
   }
 
   // acquérir l'input
   const [text, setText] = useState("");
-  const [suggestions, setSuggestions] = useState([
-    { name: "Schoenau", id: 2975434 },
-    { name: "Selestat", id: 2975233 },
-  ]);
+  const [suggestions, setSuggestions] = useState([]);
   // affichage des cartes
   let locationsCards = props.locationsList.map((element) => {
     if (!element || !element.location) return;
@@ -75,7 +71,6 @@ function Header(props) {
     )
       .then((reponse) => reponse.json())
       .then((data) => {
-        console.log();
         props.setLocationsList([
           ...props.locationsList,
           {
@@ -86,7 +81,9 @@ function Header(props) {
         ]);
       });
   }
-
+  useEffect(() => {
+    localStorage.setItem("locationsList", JSON.stringify(props.locationsList));
+  }, [props.locationsList]);
   // définir le mode utilisé
   // c = Celcius , f = Farhenheit
   return (
@@ -117,10 +114,6 @@ function Header(props) {
           +
         </button>
       </div>
-      <select onChange={(e) => props.setMode(e.target.value)}>
-        <option value="c">Celsiuc °C</option>
-        <option value="f">Farhenheit °F</option>
-      </select>
     </header>
   );
 }

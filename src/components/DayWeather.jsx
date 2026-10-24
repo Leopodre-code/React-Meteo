@@ -59,10 +59,10 @@ function DayWeather(props) {
     ];
     let zone;
     if (mode === "UV") {
-      if (UV < 2) zone = 0;
-      else if (UV < 5) zone = 1;
-      else if (UV < 7) zone = 2;
-      else if (UV < 10) zone = 3;
+      if (UV < 3) zone = 0;
+      else if (UV < 6) zone = 1;
+      else if (UV < 8) zone = 2;
+      else if (UV < 11) zone = 3;
       else if (UV > 11) zone = 4;
     } else if (mode === "zone") zone = UV;
     return UVCOLORS[zone];
@@ -80,7 +80,6 @@ function DayWeather(props) {
 
     let gradientColors = tempsColors.map((e, i) => {
       let offset = Math.round(e.pos / 0.24) / 100;
-      console.log(e.temp);
       return (
         <stop
           offset={offset}
@@ -120,7 +119,7 @@ function DayWeather(props) {
   const [graphic, setGraphic] = useState({
     wind: false,
     rain: false,
-    UV: true,
+    UV: false,
   });
   let date = new Date(props.daySelected.slice(0, 10));
   let jour = date.toLocaleDateString("fr-FR", {
