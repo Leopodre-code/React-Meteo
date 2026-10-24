@@ -42,6 +42,12 @@
   --temp-extreme-a: #d9481f; /* rouge-orangé */
   --temp-extreme-b: #e01f8c;
 
+  --uv-low: #4caf50; /* 0 – 2   faible      : vert   */
+  --uv-moderate: #f2c81c; /* 3 – 5   modéré      : jaune  */
+  --uv-high: #f28a1c; /* 6 – 7   élevé       : orange */
+  --uv-very-high: #e0352b; /* 8 – 10  très élevé  : rouge  */
+  --uv-extreme: #8e44ad; /* 11 +    extrême     : violet */
+
   /* NUIT */
   --night-very-cold: #95a1c6; /* -20° à -10° */
   --night-cold: #6994bf; /* -10° à 0° */

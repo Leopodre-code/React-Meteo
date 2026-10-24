@@ -29,7 +29,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,uv_index_max,wind_speed_10m_max,wind_direction_10m_dominant,precipitation_sum,snowfall_sum&hourly=temperature_2m,snowfall,rain,wind_speed_10m,precipitation&models=best_match&current=temperature_2m,rain,precipitation&timezone=Europe%2FBerlin&forecast_days=7&past_hours=24`,
+        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,uv_index_max,wind_speed_10m_max,wind_direction_10m_dominant,precipitation_sum,snowfall_sum&hourly=temperature_2m,snowfall,rain,wind_speed_10m,precipitation,uv_index&models=best_match&current=temperature_2m,rain,precipitation&timezone=Europe%2FBerlin&forecast_days=7&past_hours=24`,
       );
       list = await response.json();
     } catch (error) {
@@ -116,6 +116,7 @@ function App() {
     rain: [],
     snowfall: [],
     time: [],
+    uv_index: [],
   };
   if (data) {
     dayWeatherStartIndex = data.hourly.time.indexOf(daySelected);

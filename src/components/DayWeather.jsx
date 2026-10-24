@@ -1,7 +1,4 @@
 import "./DayWeather.css";
-
-// FAIRE LA METHODE 2 DEGRADE PUIS FAIRE UNE NOUVELLE BRANCHE GITHUB
-
 import {
   ComposedChart,
   Line,
@@ -22,10 +19,8 @@ function DayWeather(props) {
     wind: props.dayWeather.wind_speed_10m[i],
     snow: props.dayWeather.snowfall[i],
     rain: props.dayWeather.rain[i],
-  }));
-  let temp1 = Math.floor(Math.min(...props.dayWeather.temperature_2m) / 10 + 1); // plus petite temp
-  console.log(temp1);
-  // DEFINI LES COULEURS
+    UV: props.dayWeather.uv_index[i],
+  })); // plus petite temp  // DEFINI LES COULEURS
   function setRainColor() {
     let dayRain = Math.round(
       props.dayWeather.rain.reduce((acc, e) => acc + e, 0) / 1.5,
@@ -34,6 +29,7 @@ function DayWeather(props) {
     if (dayRain < 16) return "rain-moderate";
     else return "rain-heavy";
   }
+
   function setTempColor(temps, mode = "temp") {
     const TEMPCOLORS = [
       "temp-cold-",
@@ -52,36 +48,79 @@ function DayWeather(props) {
     if (num > 4) num = 4;
     return TEMPCOLORS[num];
   }
-  function setGradientColors() {
-    let actualZone = Math.floor(props.dayWeather.temperature_2m[0] / 10 + 1);
-    let tempsColors = [{ pos: 0, toColor: actualZone }];
+
+  function setUVColor(UV, mode = "UV") {
+    const UVCOLORS = [
+      "uv-low",
+      "uv-moderate",
+      "uv-high",
+      "uv-very-hight",
+      "uv-extreme",
+    ];
+    let zone;
+    if (mode === "UV") {
+      if (UV < 2) zone = 0;
+      else if (UV < 5) zone = 1;
+      else if (UV < 7) zone = 2;
+      else if (UV < 10) zone = 3;
+      else if (UV > 11) zone = 4;
+    } else if (mode === "zone") zone = UV;
+    return UVCOLORS[zone];
+  }
+
+  function setTempGradientColors() {
+    let actualZone = props.dayWeather.temperature_2m[0];
+    let tempsColors = [{ pos: 0, temp: actualZone }];
     props.dayWeather.temperature_2m.map((e, i) => {
-      if (Math.floor(e / 10 + 1) !== actualZone) {
-        actualZone = Math.floor(e / 10 + 1);
-        tempsColors.push({ pos: i, toColor: actualZone });
+      if (!(i % 4)) {
+        actualZone = e;
+        tempsColors.push({ pos: i, temp: actualZone });
       }
     });
 
-    let gradientColors = tempsColors.map((e, i, array) => {
-      if (!array[i + 1])
-        return (
-          <stop
-            offset="1"
-            key={i}
-            stopColor={`var(--${setTempColor([e.toColor], "zone")}a)`}
-          />
-        ); // Si c'est le dernier le mettre a la fin avec la dernière couleur qui change
-      let offset = Math.round(((e.pos + array[i + 1].pos) / 48) * 100) / 100; // offset au centième près
-      let color = setTempColor([e.toColor], "zone");
-      return <stop offset={offset} key={i} stopColor={`var(--${color}a)`} />;
+    let gradientColors = tempsColors.map((e, i) => {
+      let offset = Math.round(e.pos / 0.24) / 100;
+      console.log(e.temp);
+      return (
+        <stop
+          offset={offset}
+          key={i}
+          stopColor={`var(--${setTempColor([e.temp])}a)`}
+        />
+      );
     });
     return gradientColors;
   }
-  let gradientColors = setGradientColors();
+  let tempGradientColors = setTempGradientColors();
+
+  function setUVGradientColors() {
+    let actualZone = props.dayWeather.uv_index[0];
+    let UVColors = [{ pos: 0, UV: actualZone }];
+    props.dayWeather.uv_index.map((e, i) => {
+      if (!(i % 2)) {
+        actualZone = e;
+        UVColors.push({ pos: i, UV: actualZone });
+      }
+    });
+    let gradientColors = UVColors.map((e, i) => {
+      let offset = Math.round(e.pos / 0.24) / 100;
+      return (
+        <stop
+          offset={offset}
+          key={i}
+          stopColor={`var(--${setUVColor([e.UV])})`}
+        />
+      );
+    });
+    return gradientColors;
+    // FAIRE LA MEME FONCTION QUE POUR LES TEMP POUR FAZIRE UN DEGRADE DU GRADIENT DES UVS
+  }
+  let UVGradientColors = setUVGradientColors();
 
   const [graphic, setGraphic] = useState({
     wind: false,
     rain: false,
+    UV: true,
   });
   let date = new Date(props.daySelected.slice(0, 10));
   let jour = date.toLocaleDateString("fr-FR", {
@@ -95,14 +134,17 @@ function DayWeather(props) {
       <ComposedChart width={"60%"} height={300} data={data}>
         <defs>
           <linearGradient id="temp-gradient" x1="0" x2="1" y1="1" y2="1">
-            {[gradientColors]}
+            {[tempGradientColors]}
+          </linearGradient>
+          <linearGradient id="UV-gradient" x1="0" x2="1" y1="1" y2="1">
+            {[UVGradientColors]}
           </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="hour" />
         <YAxis yAxisId="temp" />
         <YAxis yAxisId="cond" hide domain={[0, 60]} orientation="right" />
-        <YAxis yAxisId="rain" hide domain={[0, 10]} orientation="right" />
+        <YAxis yAxisId="rain&UV" hide domain={[0, 10]} orientation="right" />
 
         <Tooltip />
         <Area
@@ -125,12 +167,22 @@ function DayWeather(props) {
             strokeWidth={3}
           />
         )}
+        {graphic.UV && (
+          <Line
+            dataKey="UV"
+            stroke="url(#UV-gradient)"
+            strokeOpacity={1}
+            dot={false}
+            yAxisId="rain&UV"
+            strokeWidth={3}
+          />
+        )}
         {props.dayWeather.snowfall.reduce((acc, e) => acc + e, 0) && (
           <Line dataKey="snow" stroke="var(--accent)" yAxisId="rain" />
         )}
         {props.dayWeather.rain.reduce((acc, e) => acc + e, 0) && (
           <Area
-            dataKey="rain"
+            dataKey="rain&UV"
             strokeWidth={1.3}
             stroke={`var(--${setRainColor()})`}
             type="monotone"
@@ -169,7 +221,19 @@ function DayWeather(props) {
               }
             />
           </label>
-          <label></label>
+          <label>
+            UV
+            <input
+              type="checkbox"
+              checked={graphic.UV}
+              onChange={(e) =>
+                setGraphic((content) => ({
+                  ...content,
+                  UV: e.target.checked,
+                }))
+              }
+            />
+          </label>
         </div>
         <div className="info"></div>
       </div>
