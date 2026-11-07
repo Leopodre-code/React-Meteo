@@ -15,9 +15,7 @@ import sunny from "./assets/icons/sun.png";
 function App() {
   const [dayCards, setDayCard] = useState([]);
   // locationsList
-  console.log(JSON.parse(localStorage.getItem("locationsList")));
   const [locationsList, setLocationsList] = useState(() => {
-    console.log(JSON.parse(localStorage.getItem("locationsList")));
     if (!JSON.parse(localStorage.getItem("locationsList")))
       return [
         { location: "Schoenau", latitude: "48.2236", longitude: "7.6467" },
@@ -49,7 +47,15 @@ function App() {
   useEffect(() => {
     getJSON().then((data) => {
       console.log(data);
-      // tout le code pour crée une dayCard :
+      if (!data.daily) {
+        setDayCard(
+          <p>
+            Erreur de communication avec OpenMeteo... Vérifie ta connection
+          </p>,
+        );
+        return;
+      } // si erreur
+
       setData(data);
       let days = data.daily.time;
       let dayCardsLoop = [];
@@ -59,6 +65,7 @@ function App() {
         let dateTool = new Date(days[i]);
         let dateHourly = `${days[i]}T00:00`;
         const jours = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+        // Toute les données de la dayCard
         let dayName = jours[dateTool.getDay()];
         let dayNumber = dateTool.getDate();
 
@@ -78,15 +85,22 @@ function App() {
         } else if (UV >= 4) {
           icon = sunny;
           if (UV >= 6) info += `hight UV index (${UV})`;
+        } else if (snowFall > 0.5) {
+          info += `Snowy day`;
+          icon = snowy;
         }
+
         if (snowFall > 1) {
           info += `snowy day`;
           icon = snowy;
         }
         let rainBar = Math.max(14, Math.min(140, Math.round(rain * 4)));
-        let snowBar = Math.max(14, Math.min(140, Math.round(snowFall * 10)));
+        // barre de neige : 4.3 px par cm, pleine (129 px) à 30 cm/jour
+        let snowBar = Math.max(8, Math.min(129, Math.round(snowFall * 4.3)));
         if (rain < 1.5) rainBar = 0;
-        if (snowBar < 1) snowBar = 0;
+        if (snowFall < 0.5) snowBar = 0;
+        let selected;
+        if (!i) selected = "selected";
         dayCardsLoop.push(
           <DayCard
             key={dayNumber}
@@ -102,12 +116,13 @@ function App() {
             dateHourly={dateHourly}
             setDaySelected={setDaySelected}
             daySelected={daySelected}
+            selected={selected}
           ></DayCard>,
         );
       }
       setDayCard(dayCardsLoop);
     });
-  }, [locationsList]);
+  }, [locationsList]); // Création des DayCards
 
   // card slider
   const dayCardsSliderRef = useRef(null);
@@ -181,6 +196,7 @@ function App() {
       <DayWeather
         daySelected={daySelected}
         dayWeather={dayWeather}
+        data={data}
       ></DayWeather>
     </>
   );

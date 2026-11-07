@@ -19,8 +19,15 @@ header div {
   color: var(--accent);
   max-height: 4rem;
   width: fit-content;
-  display: block;
+  display: flex;
   text-align: center;
+  .trash-icon {
+    width: 0.8rem;
+    color: rgba(128, 128, 128, 0.4);
+    &:hover {
+      color: rgba(255, 0, 0, 0.6);
+    }
+  }
 }
 .location-card:first-child {
   border: 5px solid var(--accent-border);
@@ -45,7 +52,7 @@ header div {
   display: flex;
   flex-shrink: 1;
 }
-#liste-villes {
+#liste-locations {
   position: absolute;
   z-index: 1000;
   top: 30px;

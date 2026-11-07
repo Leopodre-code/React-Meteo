@@ -11,8 +11,11 @@ import {
 import { useState } from "react";
 import SoleilLevant from "/src/assets/icons/svg/SoleilLevant";
 import SoleilCouchant from "/src/assets/icons/svg/SoleilCouchant";
+import SansUV from "/src/assets/icons/svg/NoUV.jsx";
+import WindIcon from "/src/assets/icons/svg/WindIcon.jsx";
 
 function DayWeather(props) {
+  console.log(props.data);
   let data = props.dayWeather.time.map((heure, i) => ({
     hour: heure.slice(11, 13),
     temp: props.dayWeather.temperature_2m[i],
@@ -121,6 +124,7 @@ function DayWeather(props) {
     rain: false,
     UV: false,
   });
+
   let date = new Date(props.daySelected.slice(0, 10));
   let jour = date.toLocaleDateString("fr-FR", {
     weekday: "long",
@@ -128,71 +132,107 @@ function DayWeather(props) {
     month: "long",
     year: "numeric",
   });
+  // Graphique des UV dynamique
+  let UV;
+  if (graphic.UV) {
+    if (props.dayWeather.uv_index.reduce((acc, e) => acc + e, 0) > 1) {
+      UV = true;
+    } else {
+      UV = false;
+    }
+  }
+  // bar de vent
+  let windSpeed = Math.round(
+    props.dayWeather.wind_speed_10m.reduce((acc, e) => acc + e, 0) / 24,
+  );
+  let windBar;
+  if (props.dayWeather.wind_speed_10m) {
+    windBar = windSpeed * 2;
+  }
+
+  // domaine du graphique
+  let DOMAIN;
+  if (props.data?.hourly?.temperature_2m ?? false) {
+    DOMAIN = [
+      Math.floor((Math.min(...props.data.hourly.temperature_2m) - 2) / 10) * 10,
+      Math.ceil((Math.max(...props.data.hourly.temperature_2m) + 2) / 10) * 10,
+    ];
+  }
   return (
     <div className="main">
-      <ComposedChart width={"60%"} height={300} data={data}>
-        <defs>
-          <linearGradient id="temp-gradient" x1="0" x2="1" y1="1" y2="1">
-            {[tempGradientColors]}
-          </linearGradient>
-          <linearGradient id="UV-gradient" x1="0" x2="1" y1="1" y2="1">
-            {[UVGradientColors]}
-          </linearGradient>
-        </defs>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="hour" />
-        <YAxis yAxisId="temp" />
-        <YAxis yAxisId="cond" hide domain={[0, 60]} orientation="right" />
-        <YAxis yAxisId="rain&UV" hide domain={[0, 10]} orientation="right" />
-
-        <Tooltip />
-        <Area
-          type="monotone"
-          dataKey="temp"
-          stroke="url(#temp-gradient)"
-          fill="url(#temp-gradient)"
-          fillOpacity={0.6}
-          yAxisId="temp"
-          strokeWidth={2}
-          className="temp-gradient"
-        />
-        {graphic.wind && (
-          <Line
-            dataKey="wind"
-            stroke="var(--wind)"
-            strokeOpacity={0.5}
-            dot={false}
-            yAxisId="cond"
-            strokeWidth={3}
-          />
-        )}
-        {graphic.UV && (
-          <Line
-            dataKey="UV"
-            stroke="url(#UV-gradient)"
-            strokeOpacity={1}
-            dot={false}
-            yAxisId="rain&UV"
-            strokeWidth={3}
-          />
-        )}
-        {props.dayWeather.snowfall.reduce((acc, e) => acc + e, 0) && (
-          <Line dataKey="snow" stroke="var(--accent)" yAxisId="rain" />
-        )}
-        {props.dayWeather.rain.reduce((acc, e) => acc + e, 0) && (
+      <div className="graph-container">
+        <ComposedChart width={"100%"} height={"100%"} data={data}>
+          <defs>
+            <linearGradient id="temp-gradient" x1="0" x2="1" y1="1" y2="1">
+              {[tempGradientColors]}
+            </linearGradient>
+            <linearGradient id="UV-gradient" x1="0" x2="1" y1="1" y2="1">
+              {[UVGradientColors]}
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="hour" />
+          <YAxis yAxisId="temp" domain={DOMAIN} />
+          <YAxis yAxisId="cond" hide domain={[0, 60]} orientation="right" />
+          <YAxis yAxisId="rain&UV" hide domain={[0, 10]} orientation="right" />
+          <Tooltip />
           <Area
-            dataKey="rain&UV"
-            strokeWidth={1.3}
-            stroke={`var(--${setRainColor()})`}
             type="monotone"
-            fill={`var(--${setRainColor()})`}
-            fillOpacity={0.3}
-            yAxisId="rain"
+            baseValue="dataMin"
+            dataKey="temp"
+            stroke="url(#temp-gradient)"
+            fill="url(#temp-gradient)"
+            fillOpacity={0.6}
+            yAxisId="temp"
+            strokeWidth={2}
+            className="temp-gradient"
           />
-        )}
-      </ComposedChart>
+          {graphic.wind && (
+            <Line
+              dataKey="wind"
+              stroke="var(--wind-moderate)"
+              strokeOpacity={0.5}
+              dot={false}
+              yAxisId="cond"
+              strokeWidth={3}
+            />
+          )}
+          {UV && (
+            <Line
+              dataKey="UV"
+              stroke="url(#UV-gradient)"
+              strokeOpacity={1}
+              dot={false}
+              yAxisId="rain&UV"
+              strokeWidth={3}
+            />
+          )}
+          {props.dayWeather.snowfall.reduce((acc, e) => acc + e, 0) && (
+            <Line
+              dataKey="snow"
+              strokeWidth={3}
+              stroke="#ffffff"
+              dot={false}
+              yAxisId="rain&UV"
+            />
+          )}
+          {props.dayWeather.rain.reduce((acc, e) => acc + e, 0) && (
+            <Area
+              dataKey="rain&UV"
+              strokeWidth={1.3}
+              stroke={`var(--${setRainColor()})`}
+              type="monotone"
+              fill={`var(--${setRainColor()})`}
+              fillOpacity={0.3}
+              yAxisId="rain"
+            />
+          )}
+        </ComposedChart>
+      </div>
       <div className="info-container">
-        <p className="date">{jour} Après J-C</p>
+        <p className="date">
+          {jour} <span>Après J-C</span>
+        </p>
         <em className="credit">@Leopodre-2026</em>
         <div className="sun-icon">
           <SoleilLevant />
@@ -234,7 +274,24 @@ function DayWeather(props) {
             />
           </label>
         </div>
-        <div className="info"></div>
+
+        <div className="info">
+          {graphic.UV && !UV && <SansUV height="100%" width="100%"></SansUV>}
+          <div className="wind">
+            <div className="wind-bar-container">
+              <div className="wind-bar-background">
+                <span
+                  className="wind-bar"
+                  style={{ height: `${windBar}%` }}
+                ></span>
+              </div>
+            </div>
+            <div className="wind-speed-container">
+              <p className="wind-speed">Vit. moy. {windSpeed}km/h</p>
+              <WindIcon style={{ maxHeight: "30px", width: "100%" }} />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

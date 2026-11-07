@@ -29,16 +29,23 @@ function DayCard(props) {
       "--night-mild",
       "--night-warm",
     ];
-    let MTemp1 = Math.floor((props.maxTemp + 10) / 10);
-    let MTemp2 = Math.round(props.maxTemp / 10);
-    let mTemp = Math.floor((props.minTemp + 20) / 10);
+    let MTemp1 = Math.min(
+      4,
+      Math.max(0, Math.floor((props.maxTemp + 10) / 10)),
+    );
+    let MTemp2 = Math.min(
+      4,
+      Math.max(0, Math.round((props.maxTemp + 10) / 10)),
+    );
+    let mTemp = Math.min(4, Math.max(0, Math.floor((props.minTemp + 20) / 10)));
+
     let C1 = dayColorA[MTemp1];
     let C2 = dayColorB[MTemp2];
     let C3 = nightColor[mTemp];
 
     cardRef.current.style.background = `conic-gradient(var(${C2}),var(${C3}),var(${C1}),var(${C2}) )`;
     cardRef.current.style.border = `solid 2px var(${C3})`;
-  }, [props.maxTemp, props.minTemp]);
+  }, [props.maxTemp, props.minTemp]); // Couleurs de la dayCard
   function SelectDay() {
     document.querySelectorAll(".day-card.selected").forEach((card) => {
       card.classList.remove("selected");
@@ -47,7 +54,7 @@ function DayCard(props) {
 
   return (
     <div
-      className="day-card"
+      className={`day-card ${props.selected}`}
       ref={cardRef}
       onClick={() => {
         props.setDaySelected(props.dateHourly);
@@ -65,7 +72,7 @@ function DayCard(props) {
       <span className="bar-container">
         <span className="bar-background">
           <span className="bar-rain" style={{ height: `${rain}px` }}></span>
-          {snow > 14 && (
+          {snow > 1 && (
             <span className="bar-snow" style={{ height: `${snow}px` }}>
               <SnowIcon></SnowIcon>
             </span>

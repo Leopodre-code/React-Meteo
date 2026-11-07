@@ -13,7 +13,9 @@
 
   & > * {
     margin: 0;
-    border: 2px solid rgba(255, 0, 0, 0.08);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    /*           x   y   flou  couleur          */
+    border: 2px solid rgba(252, 0, 0, 0.043);
     height: 100%;
     box-sizing: border-box;
   }
@@ -78,9 +80,9 @@
   .bar-snow {
     background-image: linear-gradient(
       to top,
-      var(--snow-light) 10px,
-      var(--snow-moderate) 60px,
-      var(--snow-heavy) 100%
+      var(--snow-light) 22px,
+      var(--snow-moderate) 65px,
+      var(--snow-heavy) 129px
     );
   }
   .info {

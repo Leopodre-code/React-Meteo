@@ -1,4 +1,5 @@
 import "./header.css";
+import TrashIcon from "/src/assets/icons/SVG/TrashIcon";
 import { useEffect, useState } from "react";
 
 function Header(props) {
@@ -12,75 +13,128 @@ function Header(props) {
     );
     props.setLocationsList([...element, ...other]);
   }
+  function deleteLocation(location) {
+    props.setLocationsList(
+      props.locationsList.filter((e) => e.location !== location),
+    );
+  }
 
-  // acquérir l'input
+  // variable pour les suggestions et ajout de cartes
   const [text, setText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  // affichage des cartes
+  const [ShearchData, setShearchData] = useState(); // affichage des cartes
   let locationsCards = props.locationsList.map((element) => {
     if (!element || !element.location) return;
     return (
       <div
         key={element.location}
         className="location-card"
-        onClick={() => putCardFirst(element.location)}
+        onClick={(e) => {
+          e.stopPropagation();
+          putCardFirst(element.location);
+        }}
       >
         {element.location}
+        <TrashIcon
+          onClick={(e) => {
+            e.stopPropagation();
+            console.log(element.location);
+            console.log(props.locationsList);
+            deleteLocation(element.location);
+          }}
+          className="trash-icon"
+        />
       </div>
     );
   });
   // suggérer des lieux
-  async function getJSON() {
+  async function getJSON(num) {
     let list;
     try {
       const response = await fetch(
-        `https://geocoding-api.open-meteo.com/v1/search?name=${text}&count=3&language=fr`,
+        `https://geocoding-api.open-meteo.com/v1/search?name=${text}&count=${num}&language=fr`,
       );
       list = await response.json();
     } catch (error) {
       console.log("une erreur s'est produite avec le JSON : " + error);
     }
-    return list;
+    return list.results;
   }
+
   useEffect(() => {
-    if (text.slice().length < 3) return;
-    getJSON().then((response) => {
+    // suggestions
+    if (text.slice().length < 2) return;
+    getJSON(3).then((response) => {
       console.log(suggestions);
-      if (!response || !response.results) return;
-      console.log(response.results);
+      if (!response) return;
+      console.log(
+        props.locationsList.map((e) => {
+          return e;
+        }),
+      );
+      console.log(response);
       setSuggestions([]);
       setSuggestions(
-        response.results.map((e) => ({
-          location: e.name,
-          id: e.id,
-        })),
+        response.map((e) => {
+          if (
+            props.locationsList
+              .map((loc) => {
+                return loc.location;
+              })
+              .includes(String(e.latitude))
+          )
+            // TERMINER LA VERIFICATION
+            return;
+          let info;
+          if (e.admin3 && !e.admin3.includes(e.name)) info = e.admin3;
+          else if (e.admin2 && !e.admin2.includes(e.name)) info = e.admin2;
+          else info = e.country;
+          return {
+            location: e.name,
+            id: e.id,
+            info: info,
+          };
+        }),
       );
     });
   }, [text]);
+  console.log(suggestions);
 
   // ajouter un lieu
   function addLocation(location) {
     if (!location) return;
-    console.log(location);
-    fetch(
-      `https://nominatim.openstreetmap.org/search?q=${location}&format=json&limit=1`,
-      {
-        headers: { "User-Agent": "MonAppli/1.0" },
-      },
-      setText(""),
-    )
-      .then((reponse) => reponse.json())
-      .then((data) => {
-        props.setLocationsList([
-          ...props.locationsList,
-          {
-            location: `${text}`,
-            latitude: data[0].lat,
-            longitude: data[0].lon,
-          },
-        ]);
+
+    function addLocationToState(data) {
+      if (data.admin4 && !data.admin4.includes(data.name)) return data.admin4;
+      else if (data.admin3 && !data.admin3.includes(data.name))
+        return data.admin3;
+      else if (data.admin2 && !data.admin2.includes(data.name))
+        return data.admin2;
+      else if (data.admin1 && !data.admin1.includes(data.name))
+        return data.admin1;
+
+      props.setLocationsList([
+        ...props.locationsList,
+        {
+          location: `${text}`,
+          latitude: data[0].lat,
+          longitude: data[0].lon,
+          country: data[0].country,
+          info: info,
+          id: data[0].id,
+        },
+      ]);
+    }
+    //REFAIRE LA FONCTION ET CHANGER D'API POUR REPRENDRE LES DONNEE DES SUGGESTIONS D'OPEN METEO DEPUIS LA VARIABLE
+    if (ShearchData) {
+      addLocation(ShearchData);
+      console.log("ajouté depuis les suggestions");
+    } else
+      getJSON(1).then((data) => {
+        addLocationToState(data[0]);
       });
   }
+  // sauvegarde
   useEffect(() => {
     localStorage.setItem("locationsList", JSON.stringify(props.locationsList));
   }, [props.locationsList]);
@@ -92,20 +146,27 @@ function Header(props) {
       <div className="add-card">
         <input
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+            setShearchData(false);
+            setText(e.target.value);
+          }}
           type="text"
           placeholder="Paris"
           className="input-add-Card"
         ></input>
-        {text.slice().length > 2 && suggestions.length > 0 && (
-          <ul id="liste-villes">
-            {suggestions.map((ville) => (
+        {text.slice().length > 1 && suggestions.length > 0 && (
+          <ul id="liste-locations">
+            {suggestions.map((location) => (
               <li
-                key={ville.id}
-                value={ville.location}
-                onClick={() => setText(ville.location)}
+                key={location.id}
+                value={location.location}
+                onClick={(location) => {
+                  setShearchData(location);
+                  setText(location.location);
+                }}
               >
-                {ville.location}
+                <b>{location.location}</b>
+                <i>{location.info}</i>
               </li>
             ))}
           </ul>

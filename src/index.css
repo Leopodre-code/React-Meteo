@@ -59,6 +59,10 @@
   --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
+  --wind-light: #cdd6dd; /* brise légère    */
+  --wind-moderate: #8a9ba8; /* vent soutenu (ton gris actuel) */
+  --wind-strong: #3f4d5a; /* coup de vent    */
+
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
   color-scheme: light dark;

@@ -1,70 +1,274 @@
 .main {
   background-color: aqua;
   display: flex;
-}
-ComposedChart {
-  height: 100%;
-  width: 60%;
-}
-.info-container {
-  width: 40%;
-  padding: 5px;
+  width: 100%;
+  height: 16rem;
   display: grid;
-  grid-template: repeat(4, 3rem) / 8rem 5rem;
-  grid-template:
-    "date credit" minmax(3rem, 4rem)
-    "sun-icon info" 2.8rem
-    "sun-hour info" 2rem
-    "settings info" 3rem
-    / 8rem 5rem;
-  * {
-    border: solid 2px rgba(255, 0, 0, 0.447);
+}
+
+.graph-container {
+  grid-area: graph-container;
+}
+@media (max-width: 800px) {
+  .main {
+    grid-template:
+      "graph-container info-container" 100% /
+      70% 30%;
   }
-  .date {
-    grid-area: date;
-    font-size: 0.8rem;
-    height: 100%;
-    margin: 0;
-  }
-  .credit {
-    grid-area: credit;
-  }
-  .sun-icon {
-    grid-area: sun-icon;
-    height: 100%;
-    position: relative;
-    svg {
-      width: 2.5rem;
-      height: 2.5rem;
+  .info-container {
+    width: 96%;
+    padding: 5px;
+    display: grid;
+    grid-template: repeat(4, 3rem) / 8rem 5rem;
+    grid-template:
+      "date credit" minmax(3rem, 4rem)
+      "sun-icon info" 2.8rem
+      "sun-hour info" 2rem
+      "settings info"
+      / minmax(6rem, 10rem) 4rem;
+    & > * {
+      border: solid 2px rgba(255, 0, 0, 0.023);
     }
-    svg:first-child {
-      position: absolute;
-      left: 4px;
+    .date {
+      grid-area: date;
+      font-size: 0.8rem;
+      height: 100%;
+      margin: 0;
+      span {
+        display: none;
+      }
     }
-    svg:last-child {
-      position: absolute;
-      right: 4px;
+    .credit {
+      grid-area: credit;
+      font-size: x-small;
     }
-  }
-  .sun-hour {
-    grid-area: sun-hour;
-    position: relative;
-    div:first-child {
-      position: absolute;
-      left: 4px;
+    .sun-icon {
+      grid-area: sun-icon;
+      height: 100%;
+      position: relative;
+      svg {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
+      svg:first-child {
+        position: absolute;
+        left: 4px;
+      }
+      svg:last-child {
+        position: absolute;
+        right: 4px;
+      }
     }
-    div:last-child {
-      position: absolute;
-      right: 4px;
+    .sun-hour {
+      grid-area: sun-hour;
+      position: relative;
+      div:first-child {
+        position: absolute;
+        left: 4px;
+      }
+      div:last-child {
+        position: absolute;
+        right: 4px;
+      }
     }
-  }
-  .settings {
-    grid-area: settings;
-  }
-  .info {
-    grid-area: info;
+    .settings {
+      grid-area: settings;
+    }
+    .info {
+      grid-area: info;
+      display: grid;
+      grid-template:
+        "wind" 90%
+        "UV-icon" 10% /
+        100%;
+      .UV-icon {
+        grid-area: UV-icon;
+      }
+      .wind {
+        grid-area: wind;
+        display: grid;
+        grid-template:
+          "wind-bar-container" 70%
+          "wind-speed-container" 30%/
+          100%;
+        .wind-bar-container {
+          grid-area: wind-bar-container;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .wind-bar-background {
+            width: 50%;
+            max-width: 20px;
+            height: 90%;
+            background-color: #8a9ba897;
+            border: 2px solid #7989958a;
+            margin: 10%;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+            border-radius: 5px;
+            .wind-bar {
+              background: linear-gradient(
+                to top,
+                var(--wind-light) 20px,
+                var(--wind-moderate) 55px,
+                var(--wind-strong) 105px
+              );
+              width: 100%;
+              border-radius: 5px;
+              z-index: 1000;
+              transition: height 1500ms ease-out;
+            }
+          }
+        }
+        .wind-speed-container {
+          grid-area: wind-speed-container;
+          margin: 0px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          .wind-speed {
+            width: 100%;
+            font-size: 12px;
+            line-height: 1;
+            height: 100%;
+            margin: 0px;
+          }
+        }
+      }
+    }
   }
 }
-* {
-  --wind: #8a9ba8;
+@media (min-width: 800px) {
+  .main {
+    grid-template:
+      "graph-container info-container" 100% /
+      70% 30%;
+  }
+  .info-container {
+    width: 96%;
+    padding: 5px;
+    display: grid;
+    grid-template: repeat(4, 3rem) / 8rem 5rem;
+    grid-template:
+      "date credit" minmax(3rem, 4rem)
+      "sun-icon info" 2.8rem
+      "sun-hour info" 2rem
+      "settings info"
+      / minmax(6rem, 10rem) 8rem;
+    & > * {
+      border: solid 2px rgba(255, 0, 0, 0.023);
+    }
+    .date {
+      grid-area: date;
+      font-size: 0.8rem;
+      height: 100%;
+      margin: 0;
+    }
+    .credit {
+      grid-area: credit;
+    }
+    .sun-icon {
+      grid-area: sun-icon;
+      height: 100%;
+      position: relative;
+      svg {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
+      svg:first-child {
+        position: absolute;
+        left: 4px;
+      }
+      svg:last-child {
+        position: absolute;
+        right: 4px;
+      }
+    }
+    .sun-hour {
+      grid-area: sun-hour;
+      position: relative;
+      div:first-child {
+        position: absolute;
+        left: 4px;
+      }
+      div:last-child {
+        position: absolute;
+        right: 4px;
+      }
+    }
+    .settings {
+      grid-area: settings;
+    }
+    .info {
+      grid-area: info;
+      display: grid;
+      grid-template:
+        "UV-icon wind" 50%
+        "info wind" 50% /
+        50% 50%;
+      .UV-icon {
+        grid-area: UV-icon;
+      }
+      .wind {
+        grid-area: wind;
+        display: grid;
+        grid-template:
+          "wind-bar-container" 70%
+          "wind-speed-container" 30%/
+          100%;
+        .wind-bar-container {
+          grid-area: wind-bar-container;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .wind-bar-background {
+            width: 50%;
+            max-width: 20px;
+            height: 90%;
+            background-color: #8a9ba897;
+            border: 2px solid #7989958a;
+            margin: 10%;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+            border-radius: 5px;
+            .wind-bar {
+              background: linear-gradient(
+                to top,
+                var(--wind-light) 20px,
+                var(--wind-moderate) 55px,
+                var(--wind-strong) 130px
+              );
+              border-radius: 5px;
+              z-index: 1000;
+              transition: height 1500ms ease-out;
+            }
+          }
+        }
+        .wind-speed-container {
+          grid-area: wind-speed-container;
+          margin: 0px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          .wind-speed {
+            width: 100%;
+            font-size: 12px;
+            line-height: 1;
+            height: 100%;
+            margin: 0px;
+          }
+        }
+      }
+    }
+  }
 }
