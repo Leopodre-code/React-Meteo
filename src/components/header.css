@@ -11,7 +11,11 @@ header div {
   height: 1.8rem;
   text-align: center;
 }
-
+@media (max-width: 800px) {
+  .location-card i {
+    display: none;
+  }
+}
 .location-card {
   background-color: var(--accent-bg);
   padding: 5px;
@@ -58,4 +62,9 @@ header div {
   top: 30px;
   background-color: aliceblue;
   width: 8rem;
+}
+.error-message {
+  background-color: rgba(255, 54, 54, 0.562);
+  display: flex;
+  align-items: center;
 }

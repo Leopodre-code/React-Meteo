@@ -23,6 +23,7 @@ function Header(props) {
   const [text, setText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [ShearchData, setShearchData] = useState(); // affichage des cartes
+  const [errorMessage, setErrorMessage] = useState();
   let locationsCards = props.locationsList.map((element) => {
     if (!element || !element.location) return;
     return (
@@ -34,7 +35,9 @@ function Header(props) {
           putCardFirst(element.location);
         }}
       >
-        {element.location}
+        <b> {element.location} </b>
+        {element.info}
+        <i> {element.country}</i>
         <TrashIcon
           onClick={(e) => {
             e.stopPropagation();
@@ -60,86 +63,97 @@ function Header(props) {
     }
     return list.results;
   }
-
+  // console.log(props.locationsList);
   useEffect(() => {
     // suggestions
     if (text.slice().length < 2) return;
     getJSON(3).then((response) => {
       console.log(suggestions);
       if (!response) return;
-      console.log(
-        props.locationsList.map((e) => {
-          return e;
-        }),
-      );
+
       console.log(response);
       setSuggestions([]);
       setSuggestions(
-        response.map((e) => {
-          if (
-            props.locationsList
-              .map((loc) => {
-                return loc.location;
-              })
-              .includes(String(e.latitude))
-          )
-            // TERMINER LA VERIFICATION
-            return;
-          let info;
-          if (e.admin3 && !e.admin3.includes(e.name)) info = e.admin3;
-          else if (e.admin2 && !e.admin2.includes(e.name)) info = e.admin2;
-          else info = e.country;
-          return {
-            location: e.name,
-            id: e.id,
-            info: info,
-          };
-        }),
+        response
+          .map((e) => {
+            let info;
+            if (e.admin3 && !e.admin3.includes(e.name)) info = e.admin3;
+            else if (e.admin2 && !e.admin2.includes(e.name)) info = e.admin2;
+            else info = e.country;
+            return {
+              location: e.name,
+              id: e.id,
+              info: info,
+              latitude: e.latitude,
+              longitude: e.longitude,
+              country: e.country,
+            };
+          })
+          .filter(
+            (e) =>
+              !props.locationsList
+                .map((loc) => {
+                  return loc.id;
+                })
+                .includes(e.id),
+          ),
       );
     });
   }, [text]);
-  console.log(suggestions);
 
   // ajouter un lieu
   function addLocation(location) {
     if (!location) return;
 
     function addLocationToState(data) {
-      if (data.admin4 && !data.admin4.includes(data.name)) return data.admin4;
-      else if (data.admin3 && !data.admin3.includes(data.name))
-        return data.admin3;
-      else if (data.admin2 && !data.admin2.includes(data.name))
-        return data.admin2;
-      else if (data.admin1 && !data.admin1.includes(data.name))
-        return data.admin1;
+      if (
+        props.locationsList
+          .map((loc) => {
+            return loc.id;
+          })
+          .includes(data.id)
+      ) {
+        setErrorMessage("Location already exist");
+        return;
+      }
+      setErrorMessage();
 
+      let info;
+      if (data.admin4 && !data.admin4.includes(data.name)) info = data.admin4;
+      else if (data.admin3 && !data.admin3.includes(data.name))
+        info = data.admin3;
+      else if (data.admin2 && !data.admin2.includes(data.name))
+        info = data.admin2;
+      else if (data.admin1 && !data.admin1.includes(data.name))
+        info = data.admin1;
+      data.info = info;
+      console.log(data);
       props.setLocationsList([
         ...props.locationsList,
         {
           location: `${text}`,
-          latitude: data[0].lat,
-          longitude: data[0].lon,
-          country: data[0].country,
-          info: info,
-          id: data[0].id,
+          latitude: data.latitude,
+          longitude: data.longitude,
+          country: data.country,
+          info: data.info,
+          id: data.id,
         },
       ]);
     }
-    //REFAIRE LA FONCTION ET CHANGER D'API POUR REPRENDRE LES DONNEE DES SUGGESTIONS D'OPEN METEO DEPUIS LA VARIABLE
     if (ShearchData) {
-      addLocation(ShearchData);
-      console.log("ajouté depuis les suggestions");
+      console.log(ShearchData);
+      addLocationToState(ShearchData);
+      setShearchData();
     } else
       getJSON(1).then((data) => {
         addLocationToState(data[0]);
       });
+    // Ne pas mettre de code ici svp
   }
   // sauvegarde
   useEffect(() => {
     localStorage.setItem("locationsList", JSON.stringify(props.locationsList));
   }, [props.locationsList]);
-  // définir le mode utilisé
-  // c = Celcius , f = Farhenheit
   return (
     <header>
       {locationsCards}
@@ -160,7 +174,7 @@ function Header(props) {
               <li
                 key={location.id}
                 value={location.location}
-                onClick={(location) => {
+                onClick={() => {
                   setShearchData(location);
                   setText(location.location);
                 }}
@@ -174,6 +188,38 @@ function Header(props) {
         <button className="button-add-Card" onClick={() => addLocation(text)}>
           +
         </button>
+      </div>
+      <div className="error-message">
+        {errorMessage && (
+          <>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+            >
+              <path
+                d="M12 3 L22 20 H2 Z"
+                fill="#d32f2f"
+                stroke="#8b0000"
+                strokeWidth="1"
+                strokeLinejoin="round"
+              />
+              {/* Point d'exclamation : la barre, puis le point */}
+              <line
+                x1="12"
+                y1="9"
+                x2="12"
+                y2="14"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+              <circle cx="12" cy="17" r="1.1" fill="white" />
+            </svg>
+            {errorMessage}
+          </>
+        )}
       </div>
     </header>
   );

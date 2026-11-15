@@ -16,51 +16,66 @@
     outline-offset: 2px;
   }
 }
+.day-cards-container-container {
+  position: relative;
+  .day-card:nth-child(n + 6) {
+    transform: scale(0.8);
+  }
+  .day-cards-container {
+    display: flex;
+    overflow-y: hidden;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    height: 14rem;
+    background-color: var(--accent-bg);
+  }
+  .day-cards-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+  .scroll-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25%;
+    width: 1.5rem;
+    position: absolute;
+    background-color: var(--accent-bg);
+    border: solid 2px rgba(0, 0, 0, 0.292);
+    border-radius: 0.7rem;
+    z-index: 10;
+    transform: translate(0px, -50%);
+    top: 50%;
+  }
+  .scroll-button-right {
+    right: 0;
+  }
+  .scroll-button-left {
+    left: 0;
+  }
 
-.day-cards-container {
-  display: flex;
-  overflow-y: hidden;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  align-items: center;
-  gap: 5px;
-  flex-wrap: nowrap;
-  flex-shrink: 0;
-  height: 14rem;
-  background-color: var(--accent-bg);
-}
-.day-cards-container::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
-}
-.scroll-button-right {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 25%;
-  width: 1.5rem;
-  position: sticky;
-  left: 96%;
-  background-color: var(--accent-bg);
-  border: solid 2px rgba(0, 0, 0, 0.292);
-  border-radius: 0.7rem;
-  z-index: 9;
-}
-.scroll-button-left {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 25%;
-  width: 1.5rem;
-  position: sticky;
-  left: 0;
-  background-color: var(--accent-bg);
-  border: solid 2px rgba(0, 0, 0, 0.292);
-  border-radius: 0.7rem;
-  z-index: 10;
-}
-.button-icon {
-  width: 1rem;
-  height: 1rem;
-  flex-shrink: 0;
-  fill: var(--social-bg);
+  .button-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    fill: var(--social-bg);
+  }
+  .add-day-cards-button {
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    transform: translate(0px, -50%);
+    border-radius: 10%;
+    width: 2rem;
+    height: 2rem;
+    margin: 2px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
 }

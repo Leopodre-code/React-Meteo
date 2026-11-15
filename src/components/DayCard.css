@@ -1,5 +1,5 @@
 .day-card {
-  margin: 6px 12px;
+  margin: 3px 0px;
   width: 8rem;
   height: 12rem;
   border-radius: 10px;
@@ -10,7 +10,7 @@
     "dayName dayNumber icon icon"
     "temp temp temp bar"
     "info info info bar";
-
+  margin: 0 3px;
   & > * {
     margin: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);

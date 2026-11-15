@@ -15,7 +15,6 @@ import SansUV from "/src/assets/icons/svg/NoUV.jsx";
 import WindIcon from "/src/assets/icons/svg/WindIcon.jsx";
 
 function DayWeather(props) {
-  console.log(props.data);
   let data = props.dayWeather.time.map((heure, i) => ({
     hour: heure.slice(11, 13),
     temp: props.dayWeather.temperature_2m[i],
@@ -23,7 +22,7 @@ function DayWeather(props) {
     snow: props.dayWeather.snowfall[i],
     rain: props.dayWeather.rain[i],
     UV: props.dayWeather.uv_index[i],
-  })); // plus petite temp  // DEFINI LES COULEURS
+  })); // defini le tableau de valeur graphique
   function setRainColor() {
     let dayRain = Math.round(
       props.dayWeather.rain.reduce((acc, e) => acc + e, 0) / 1.5,
@@ -218,13 +217,13 @@ function DayWeather(props) {
           )}
           {props.dayWeather.rain.reduce((acc, e) => acc + e, 0) && (
             <Area
-              dataKey="rain&UV"
+              dataKey="rain"
               strokeWidth={1.3}
               stroke={`var(--${setRainColor()})`}
               type="monotone"
               fill={`var(--${setRainColor()})`}
               fillOpacity={0.3}
-              yAxisId="rain"
+              yAxisId="rain&UV"
             />
           )}
         </ComposedChart>

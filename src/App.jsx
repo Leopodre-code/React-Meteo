@@ -14,6 +14,7 @@ import sunny from "./assets/icons/sun.png";
 
 function App() {
   const [dayCards, setDayCard] = useState([]);
+  const [dayCardsNumber, setDayCardNumber] = useState(7);
   // locationsList
   const [locationsList, setLocationsList] = useState(() => {
     if (!JSON.parse(localStorage.getItem("locationsList")))
@@ -26,6 +27,7 @@ function App() {
 
   const [mode, setMode] = useState("°C");
   const [scrollDist, setScrollDist] = useState(0);
+  const [scrollDistTotal, setScrollDistTotal] = useState(10000);
   const [data, setData] = useState();
   const [daySelected, setDaySelected] = useState("");
   let latitude = locationsList[0].latitude;
@@ -35,7 +37,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,uv_index_max,wind_speed_10m_max,wind_direction_10m_dominant,precipitation_sum,snowfall_sum&hourly=temperature_2m,snowfall,rain,wind_speed_10m,precipitation,uv_index&models=best_match&current=temperature_2m,rain,precipitation&timezone=Europe%2FBerlin&forecast_days=7&past_hours=24`,
+        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,uv_index_max,wind_speed_10m_max,wind_direction_10m_dominant,precipitation_sum,snowfall_sum&hourly=temperature_2m,snowfall,rain,wind_speed_10m,precipitation,uv_index&models=best_match&current=temperature_2m,rain,precipitation&timezone=Europe%2FBerlin&forecast_days=${dayCardsNumber}&past_hours=24`,
       );
       list = await response.json();
     } catch (error) {
@@ -122,15 +124,40 @@ function App() {
       }
       setDayCard(dayCardsLoop);
     });
-  }, [locationsList]); // Création des DayCards
-
+  }, [locationsList, dayCardsNumber]); // Création des DayCards
+  useEffect(() => {
+    function setSize() {
+      setScrollDistTotal(
+        dayCardsSliderRef.current.scrollWidth -
+          dayCardsSliderRef.current.clientWidth,
+      );
+    }
+    setSize();
+    window.addEventListener("resize", setSize);
+    return () => {
+      window.removeEventListener("resize", setSize);
+    };
+  }, [dayCards]);
   // card slider
   const dayCardsSliderRef = useRef(null);
-  function scroll(distance) {
-    dayCardsSliderRef.current.scrollBy({ left: distance, behavior: "smooth" });
-    setScrollDist((prev) => prev + Number(distance));
-  }
+  function scroll(direction) {
+    setScrollDistTotal(
+      dayCardsSliderRef.current.scrollWidth -
+        dayCardsSliderRef.current.clientWidth,
+    ); // DEFINIR A CHAQUE FOIS
+    let distance =
+      scrollDistTotal /
+        Math.round(
+          (dayCardsSliderRef.current.scrollWidth /
+            dayCardsSliderRef.current.clientWidth) *
+            1.2,
+        ) +
+      10;
 
+    if (direction === "L") distance = -distance;
+    dayCardsSliderRef.current.scrollBy({ left: distance, behavior: "smooth" });
+  }
+  // AJOUTER LA FONCTION VERIFIER LE SCROLL
   /* Partie graphique */
 
   let dayWeatherStartIndex;
@@ -165,20 +192,12 @@ function App() {
         mode={mode}
         setMode={(valeur) => setMode(valeur)}
       ></Header>
-      <div ref={dayCardsSliderRef} className="day-cards-container">
-        {scrollDist < dayCards.length * 105 - 50 && (
-          <button className="scroll-button-right" onClick={() => scroll("350")}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 100 100"
-              className="button-icon"
-            >
-              <path d="M 20,34 L 20,66 Q 20,80 32.70,74.13 L 72.30,55.87 Q 85,50 72.30,44.13 L 32.70,25.87 Q 20,20 20,34 Z" />
-            </svg>
-          </button>
-        )}
+      <div className="day-cards-container-container">
         {scrollDist > 10 && (
-          <button className="scroll-button-left" onClick={() => scroll("-350")}>
+          <button
+            className="scroll-button scroll-button-left"
+            onClick={() => scroll("L")}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 100 100"
@@ -191,7 +210,35 @@ function App() {
             </svg>
           </button>
         )}
-        {dayCards}
+        {scrollDist < scrollDistTotal && (
+          <button
+            className="scroll-button scroll-button-right"
+            onClick={() => scroll("R")}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 100 100"
+              className="button-icon"
+            >
+              <path d="M 20,34 L 20,66 Q 20,80 32.70,74.13 L 72.30,55.87 Q 85,50 72.30,44.13 L 32.70,25.87 Q 20,20 20,34 Z" />
+            </svg>
+          </button>
+        )}
+        {dayCardsNumber < 8 && (
+          <button
+            className="add-day-cards-button"
+            onClick={() => setDayCardNumber(16)}
+          >
+            +
+          </button>
+        )}
+        <div
+          ref={dayCardsSliderRef}
+          onScroll={() => setScrollDist(dayCardsSliderRef.current.scrollLeft)}
+          className="day-cards-container"
+        >
+          {dayCards}
+        </div>
       </div>
       <DayWeather
         daySelected={daySelected}
