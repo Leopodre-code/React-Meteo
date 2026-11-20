@@ -1,7 +1,5 @@
 .day-card {
   margin: 3px 0px;
-  width: 8rem;
-  height: 12rem;
   border-radius: 10px;
   display: grid;
   grid-template: 2fr 3fr 2fr / 1fr 3fr 1fr 1fr;
@@ -21,9 +19,6 @@
   }
   transition: transform 500ms ease-out;
   /* mettre un gradient dans le background */
-  &:hover {
-    transform: scale(1.15);
-  }
   .icon {
     grid-area: icon;
     height: auto;
@@ -40,14 +35,14 @@
   }
   .temp {
     grid-area: temp;
-    font-size: 44px;
+    font-size: 250%;
     text-align: center;
     display: flex;
     align-items: center;
     letter-spacing: 0px;
   }
   .temp span {
-    font-size: 24px;
+    font-size: 50%;
     align-items: center;
     display: flex;
   }

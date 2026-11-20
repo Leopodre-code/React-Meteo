@@ -22,25 +22,28 @@
   --snow-moderate: #a9cdeb; /* neige moyenne : bleu glacier clair */
   --snow-heavy: #4a6fa5; /* grosse neige : bleu froid profond */
 
+  /* Paliers de 5° : a = 1re moitié de la tranche, b = 2e moitié.
+     Ordre du plus froid au plus chaud :
+     violet → bleu → teal → teal-vert → vert → vert-jaune → or → orange → rouge-orangé → cramoisi */
   /* -10° à 0° — très froid */
-  --temp-cold-a: #2a4d9c; /* bleu */
-  --temp-cold-b: #542fc4;
+  --temp-cold-a: #542fc4; /* -10° à -5° : violet */
+  --temp-cold-b: #2a4d9c; /*  -5° à  0° : bleu */
 
   /* 0° à 10° — frais */
-  --temp-cool-a: var(--accent); /* #0e7c86 — teal */
-  --temp-cool-b: #0e5e86;
+  --temp-cool-a: var(--accent); /* 0° à 5°  : #0e7c86 — teal */
+  --temp-cool-b: #1e9280; /*       5° à 10° : teal-vert */
 
   /* 10° à 20° — doux */
-  --temp-mild-a: var(--accent-2); /* #2fa87a — vert */
-  --temp-mild-b: #61a72f;
+  --temp-mild-a: var(--accent-2); /* 10° à 15° : #2fa87a — vert */
+  --temp-mild-b: #61a72f; /*         15° à 20° : vert-jaune */
 
   /* 20° à 30° — chaud */
-  --temp-hot-a: var(--accent-3); /* #f2b21c — or */
-  --temp-hot-b: #f2751c;
+  --temp-hot-a: var(--accent-3); /* 20° à 25° : #f2b21c — or */
+  --temp-hot-b: #f2751c; /*         25° à 30° : orange */
 
   /* > 30° — très chaud */
-  --temp-extreme-a: #d9481f; /* rouge-orangé */
-  --temp-extreme-b: #e01f8c;
+  --temp-extreme-a: #d9481f; /* 30° à 35° : rouge-orangé */
+  --temp-extreme-b: #b8143c; /*  > 35°    : cramoisi */
 
   --uv-low: #4caf50; /* 0 – 2   faible      : vert   */
   --uv-moderate: #f2c81c; /* 3 – 5   modéré      : jaune  */

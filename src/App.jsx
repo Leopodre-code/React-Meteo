@@ -11,6 +11,7 @@ import snowy from "./assets/icons/snow.png";
 //import stormy from "./assets/icons/storm.png";
 //import sunCloud from "./assets/icons/sun-cloud.png";
 import sunny from "./assets/icons/sun.png";
+import windy from "./assets/icons/wind.svg";
 
 function App() {
   const [dayCards, setDayCard] = useState([]);
@@ -61,7 +62,9 @@ function App() {
       setData(data);
       let days = data.daily.time;
       let dayCardsLoop = [];
-      setDaySelected(`${days[0]}T00:00`);
+      if (localStorage.getItem("daySelected"))
+        setDaySelected(localStorage.getItem("daySelected"));
+      else setDaySelected(`${days[0]}T00:00`);
 
       for (let i = 0; i < days.length; i++) {
         let dateTool = new Date(days[i]);
@@ -79,30 +82,30 @@ function App() {
         let rain = data.daily.precipitation_sum[i];
         let snowFall = data.daily.snowfall_sum[i];
         let info = "";
+        let wind = data.daily.wind_speed_10m_max[i];
 
         let icon = cloudy;
-        if (rain > 15) {
+        if (snowFall > 0.5) {
+          info += `Snowy day`;
+          icon = snowy;
+        } else if (rain > 15) {
           info += `rainy day`;
           icon = rainy;
         } else if (UV >= 4) {
           icon = sunny;
-          if (UV >= 6) info += `hight UV index (${UV})`;
-        } else if (snowFall > 0.5) {
-          info += `Snowy day`;
-          icon = snowy;
+        } else if (wind > 35) {
+          icon = windy;
         }
-
-        if (snowFall > 1) {
-          info += `snowy day`;
-          icon = snowy;
-        }
+        if (UV >= 6) info += `hight UV index (${UV})`;
         let rainBar = Math.max(14, Math.min(140, Math.round(rain * 4)));
-        // barre de neige : 4.3 px par cm, pleine (129 px) à 30 cm/jour
         let snowBar = Math.max(8, Math.min(129, Math.round(snowFall * 4.3)));
         if (rain < 1.5) rainBar = 0;
         if (snowFall < 0.5) snowBar = 0;
         let selected;
-        if (!i) selected = "selected";
+        console.log(dateHourly + ":" + localStorage.getItem("daySelected"));
+        if (localStorage.getItem("daySelected") === dateHourly)
+          selected = "selected";
+        else if (!i) selected = "selected";
         dayCardsLoop.push(
           <DayCard
             key={dayNumber}
@@ -138,13 +141,25 @@ function App() {
       window.removeEventListener("resize", setSize);
     };
   }, [dayCards]);
+  useEffect(() => {
+    if (!daySelected) return;
+    localStorage.setItem("daySelected", daySelected);
+    console.log(daySelected);
+    document.querySelectorAll(".day-card.selected").forEach((card) => {
+      card.classList.remove("selected");
+    });
+    document
+      .querySelector(`[data-date="${daySelected}"]`)
+      .classList.add("selected");
+  }, [daySelected]); // daySelected
+
   // card slider
   const dayCardsSliderRef = useRef(null);
   function scroll(direction) {
     setScrollDistTotal(
       dayCardsSliderRef.current.scrollWidth -
         dayCardsSliderRef.current.clientWidth,
-    ); // DEFINIR A CHAQUE FOIS
+    );
     let distance =
       scrollDistTotal /
         Math.round(
@@ -157,7 +172,6 @@ function App() {
     if (direction === "L") distance = -distance;
     dayCardsSliderRef.current.scrollBy({ left: distance, behavior: "smooth" });
   }
-  // AJOUTER LA FONCTION VERIFIER LE SCROLL
   /* Partie graphique */
 
   let dayWeatherStartIndex;
@@ -210,7 +224,7 @@ function App() {
             </svg>
           </button>
         )}
-        {scrollDist < scrollDistTotal && (
+        {scrollDist < scrollDistTotal - 1 && (
           <button
             className="scroll-button scroll-button-right"
             onClick={() => scroll("R")}

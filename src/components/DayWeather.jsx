@@ -34,20 +34,26 @@ function DayWeather(props) {
 
   function setTempColor(temps, mode = "temp") {
     const TEMPCOLORS = [
-      "temp-cold-",
-      "temp-cool-",
-      "temp-mild-",
-      "temp-hot-",
-      "temp-extreme-",
+      "temp-cold-a",
+      "temp-cold-b",
+      "temp-cool-a",
+      "temp-cool-b",
+      "temp-mild-a",
+      "temp-mild-b",
+      "temp-hot-a",
+      "temp-hot-b",
+      "temp-extreme-a",
+      "temp-extreme-b",
     ];
     let num;
     if (mode === "temp") {
       num = Math.floor(
-        (temps.reduce((acc, e) => acc + e, 0) / temps.length + 10) / 10,
+        (temps.reduce((acc, e) => acc + e, 0) / temps.length + 10) / 5,
       );
     } else if (mode === "zone") num = temps;
+    console.log(num);
     if (num < 0) num = 0;
-    if (num > 4) num = 4;
+    if (num > TEMPCOLORS.length - 1) num = TEMPCOLORS.length - 1;
     return TEMPCOLORS[num];
   }
 
@@ -86,7 +92,7 @@ function DayWeather(props) {
         <stop
           offset={offset}
           key={i}
-          stopColor={`var(--${setTempColor([e.temp])}a)`}
+          stopColor={`var(--${setTempColor([e.temp])})`}
         />
       );
     });
@@ -114,7 +120,6 @@ function DayWeather(props) {
       );
     });
     return gradientColors;
-    // FAIRE LA MEME FONCTION QUE POUR LES TEMP POUR FAZIRE UN DEGRADE DU GRADIENT DES UVS
   }
   let UVGradientColors = setUVGradientColors();
 
@@ -122,7 +127,7 @@ function DayWeather(props) {
     wind: false,
     rain: false,
     UV: false,
-  });
+  }); // variable de base d'affichage du graphique
 
   let date = new Date(props.daySelected.slice(0, 10));
   let jour = date.toLocaleDateString("fr-FR", {

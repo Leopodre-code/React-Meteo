@@ -16,10 +16,24 @@
     outline-offset: 2px;
   }
 }
+
 .day-cards-container-container {
   position: relative;
+
   .day-card:nth-child(n + 6) {
-    transform: scale(0.8);
+    width: 7rem;
+    height: 10.7rem;
+    font-size: 0.9rem;
+    &:hover {
+      transform: scale(1.18);
+    }
+  }
+  .day-card:nth-child(-n + 5) {
+    width: 8rem;
+    height: 12rem;
+    &:hover {
+      transform: scale(1.15);
+    }
   }
   .day-cards-container {
     display: flex;
@@ -30,7 +44,8 @@
     gap: 15px;
     flex-wrap: nowrap;
     flex-shrink: 0;
-    height: 14rem;
+    height: 14.2rem;
+    padding-left: 15px;
     background-color: var(--accent-bg);
   }
   .day-cards-container::-webkit-scrollbar {
