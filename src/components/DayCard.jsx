@@ -1,7 +1,6 @@
 import "./DayCard.css";
 import { useRef, useEffect } from "react";
 import SnowIcon from "/src/assets/icons/SVG/Flocon.jsx";
-
 function DayCard(props) {
   let rain = props.rainBar;
   let snow = props.snowBar;

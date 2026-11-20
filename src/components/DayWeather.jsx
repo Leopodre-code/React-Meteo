@@ -9,11 +9,10 @@ import {
   Tooltip,
 } from "recharts";
 import { useState } from "react";
-import SoleilLevant from "/src/assets/icons/svg/SoleilLevant";
-import SoleilCouchant from "/src/assets/icons/svg/SoleilCouchant";
-import SansUV from "/src/assets/icons/svg/NoUV.jsx";
-import WindIcon from "/src/assets/icons/svg/WindIcon.jsx";
-
+import SoleilLevant from "/src/assets/icons/SVG/SoleilLevant";
+import SoleilCouchant from "/src/assets/icons/SVG/SoleilCouchant";
+import SansUV from "/src/assets/icons/SVG/NoUV.jsx";
+import WindIcon from "/src/assets/icons/SVG/WindIcon.jsx";
 function DayWeather(props) {
   let data = props.dayWeather.time.map((heure, i) => ({
     hour: heure.slice(11, 13),
@@ -51,7 +50,7 @@ function DayWeather(props) {
         (temps.reduce((acc, e) => acc + e, 0) / temps.length + 10) / 5,
       );
     } else if (mode === "zone") num = temps;
-    console.log(num);
+
     if (num < 0) num = 0;
     if (num > TEMPCOLORS.length - 1) num = TEMPCOLORS.length - 1;
     return TEMPCOLORS[num];
@@ -62,7 +61,7 @@ function DayWeather(props) {
       "uv-low",
       "uv-moderate",
       "uv-high",
-      "uv-very-hight",
+      "uv-very-high",
       "uv-extreme",
     ];
     let zone;
@@ -71,7 +70,7 @@ function DayWeather(props) {
       else if (UV < 6) zone = 1;
       else if (UV < 8) zone = 2;
       else if (UV < 11) zone = 3;
-      else if (UV > 11) zone = 4;
+      else zone = 4;
     } else if (mode === "zone") zone = UV;
     return UVCOLORS[zone];
   }
@@ -239,7 +238,7 @@ function DayWeather(props) {
               strokeWidth={3}
             />
           )}
-          {props.dayWeather.snowfall.reduce((acc, e) => acc + e, 0) && (
+          {props.dayWeather.snowfall.reduce((acc, e) => acc + e, 0) > 0 && (
             <Line
               dataKey="snow"
               strokeWidth={3}
@@ -248,7 +247,7 @@ function DayWeather(props) {
               yAxisId="rain&UV"
             />
           )}
-          {props.dayWeather.rain.reduce((acc, e) => acc + e, 0) && (
+          {props.dayWeather.rain.reduce((acc, e) => acc + e, 0) > 0 && (
             <Area
               dataKey="rain"
               strokeWidth={1.3}

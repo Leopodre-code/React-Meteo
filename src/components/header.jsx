@@ -1,7 +1,6 @@
 import "./header.css";
 import TrashIcon from "/src/assets/icons/SVG/TrashIcon";
 import { useEffect, useState } from "react";
-
 function Header(props) {
   // fonction pour mettre les carte en premier
   function putCardFirst(location) {
@@ -41,8 +40,6 @@ function Header(props) {
         <TrashIcon
           onClick={(e) => {
             e.stopPropagation();
-            console.log(element.location);
-            console.log(props.locationsList);
             deleteLocation(element.location);
           }}
           className="trash-icon"
@@ -59,19 +56,16 @@ function Header(props) {
       );
       list = await response.json();
     } catch (error) {
-      console.log("une erreur s'est produite avec le JSON : " + error);
+      console.log(error);
     }
-    return list.results;
+    return list?.results;
   }
-  // console.log(props.locationsList);
   useEffect(() => {
     // suggestions
     if (text.slice().length < 2) return;
     getJSON(3).then((response) => {
-      console.log(suggestions);
       if (!response) return;
 
-      console.log(response);
       setSuggestions([]);
       setSuggestions(
         response
@@ -126,8 +120,6 @@ function Header(props) {
         info = data.admin2;
       else if (data.admin1 && !data.admin1.includes(data.name))
         info = data.admin1;
-      data.info = info;
-      console.log(data);
       props.setLocationsList([
         ...props.locationsList,
         {
@@ -135,17 +127,22 @@ function Header(props) {
           latitude: data.latitude,
           longitude: data.longitude,
           country: data.country,
-          info: data.info,
+
+          info: info ?? data.info,
           id: data.id,
         },
       ]);
     }
     if (ShearchData) {
-      console.log(ShearchData);
       addLocationToState(ShearchData);
       setShearchData();
     } else
       getJSON(1).then((data) => {
+        // ville introuvable (ou pas de connexion) : on prévient au lieu de planter
+        if (!data?.[0]) {
+          setErrorMessage("Location not found");
+          return;
+        }
         addLocationToState(data[0]);
       });
     // Ne pas mettre de code ici svp

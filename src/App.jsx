@@ -1,4 +1,3 @@
-// import { useState } from "react";
 import Header from "/src/components/header.jsx";
 import DayCard from "./components/DayCard.jsx";
 import DayWeather from "./components/DayWeather.jsx";
@@ -22,12 +21,22 @@ function App() {
   });
   // locationsList
   const [locationsList, setLocationsList] = useState(() => {
-    if (!JSON.parse(localStorage.getItem("locationsList")))
+    if (
+      localStorage.getItem("locationsList") &&
+      JSON.parse(localStorage.getItem("locationsList"))?.length > 0
+    )
+      return JSON.parse(localStorage.getItem("locationsList"));
+    else
       return [
-        { location: "Schoenau", latitude: "48.2236", longitude: "7.6467" },
-        { location: "Kerbach", latitude: "49.1672", longitude: "6.9658" },
+        {
+          location: "Paris",
+          latitude: 48.85341,
+          longitude: 2.3488,
+          country: "France",
+          info: "Île-de-France",
+          id: 2988507,
+        },
       ];
-    else return JSON.parse(localStorage.getItem("locationsList"));
   });
 
   const [mode, setMode] = useState("°C");
@@ -53,8 +62,7 @@ function App() {
 
   useEffect(() => {
     getJSON().then((data) => {
-      console.log(data);
-      if (!data.daily) {
+      if (!data?.daily) {
         setDayCard(
           <p>
             Erreur de communication avec OpenMeteo... Vérifie ta connection
@@ -68,9 +76,7 @@ function App() {
       let dayCardsLoop = [];
       // jour sélectionné : celui sauvegardé s'il existe encore dans les prévisions, sinon le premier
       const sauvegarde = localStorage.getItem("daySelected");
-      const jourChoisi = days
-        .map((day) => `${day}T00:00`)
-        .includes(sauvegarde)
+      const jourChoisi = days.map((day) => `${day}T00:00`).includes(sauvegarde)
         ? sauvegarde
         : `${days[0]}T00:00`;
       setDaySelected(jourChoisi);
@@ -111,7 +117,7 @@ function App() {
         if (rain < 1.5) rainBar = 0;
         if (snowFall < 0.5) snowBar = 0;
         let selected;
-        console.log(dateHourly + ":" + localStorage.getItem("daySelected"));
+
         if (dateHourly === jourChoisi) selected = "selected";
         dayCardsLoop.push(
           <DayCard
@@ -151,7 +157,7 @@ function App() {
   useEffect(() => {
     if (!daySelected) return;
     localStorage.setItem("daySelected", daySelected);
-    console.log(daySelected);
+
     document.querySelectorAll(".day-card.selected").forEach((card) => {
       card.classList.remove("selected");
     });
