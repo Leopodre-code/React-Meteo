@@ -175,11 +175,39 @@ function DayWeather(props) {
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" />
+          <Tooltip
+            labelFormatter={(hour) => `${hour}h`}
+            formatter={(value, name) => {
+              const units = {
+                temp: "°C",
+                wind: "km/h",
+                rain: "mm",
+                snow: "cm",
+                UV: "",
+              };
+              const labels = {
+                temp: "Température",
+                wind: "Vent",
+                rain: "Pluie",
+                snow: "Neige",
+                UV: "UV",
+              };
+              return [`${value} ${units[name]}`, labels[name]];
+            }}
+            contentStyle={{
+              background: "var(--bg)",
+              border: "1px solid var(--border)",
+              borderRadius: 10,
+              boxShadow: "var(--shadow)",
+            }}
+            labelStyle={{ color: "var(--text-h)", fontWeight: 600 }}
+            itemStyle={{ padding: 0 }}
+            cursor={{ stroke: "var(--accent)", strokeDasharray: "3 3" }}
+          />
           <XAxis dataKey="hour" />
           <YAxis yAxisId="temp" domain={DOMAIN} />
           <YAxis yAxisId="cond" hide domain={[0, 60]} orientation="right" />
           <YAxis yAxisId="rain&UV" hide domain={[0, 10]} orientation="right" />
-          <Tooltip />
           <Area
             type="monotone"
             baseValue="dataMin"

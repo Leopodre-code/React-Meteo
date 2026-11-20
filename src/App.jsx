@@ -15,7 +15,11 @@ import windy from "./assets/icons/wind.svg";
 
 function App() {
   const [dayCards, setDayCard] = useState([]);
-  const [dayCardsNumber, setDayCardNumber] = useState(7);
+  const [dayCardsNumber, setDayCardNumber] = useState(() => {
+    if (localStorage.getItem("dayCardsNumber"))
+      return Number(localStorage.getItem("dayCardsNumber"));
+    else return 7;
+  });
   // locationsList
   const [locationsList, setLocationsList] = useState(() => {
     if (!JSON.parse(localStorage.getItem("locationsList")))
@@ -58,13 +62,18 @@ function App() {
         );
         return;
       } // si erreur
-
+      localStorage.setItem("dayCardsNumber", dayCardsNumber);
       setData(data);
       let days = data.daily.time;
       let dayCardsLoop = [];
-      if (localStorage.getItem("daySelected"))
-        setDaySelected(localStorage.getItem("daySelected"));
-      else setDaySelected(`${days[0]}T00:00`);
+      // jour sélectionné : celui sauvegardé s'il existe encore dans les prévisions, sinon le premier
+      const sauvegarde = localStorage.getItem("daySelected");
+      const jourChoisi = days
+        .map((day) => `${day}T00:00`)
+        .includes(sauvegarde)
+        ? sauvegarde
+        : `${days[0]}T00:00`;
+      setDaySelected(jourChoisi);
 
       for (let i = 0; i < days.length; i++) {
         let dateTool = new Date(days[i]);
@@ -103,9 +112,7 @@ function App() {
         if (snowFall < 0.5) snowBar = 0;
         let selected;
         console.log(dateHourly + ":" + localStorage.getItem("daySelected"));
-        if (localStorage.getItem("daySelected") === dateHourly)
-          selected = "selected";
-        else if (!i) selected = "selected";
+        if (dateHourly === jourChoisi) selected = "selected";
         dayCardsLoop.push(
           <DayCard
             key={dayNumber}
@@ -150,7 +157,7 @@ function App() {
     });
     document
       .querySelector(`[data-date="${daySelected}"]`)
-      .classList.add("selected");
+      ?.classList.add("selected");
   }, [daySelected]); // daySelected
 
   // card slider
